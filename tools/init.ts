@@ -595,10 +595,10 @@ Pushes to \`main\` are automatically built and deployed via the GitHub Actions C
   // for any future developers pulling the repository
   const dopplerYamlPath = path.join(ROOT_DIR, 'doppler.yaml')
   try {
-    await fs.writeFile(dopplerYamlPath, \`setup:\\n  project: \${APP_NAME}\\n  config: dev\\n\`, 'utf-8')
-    console.log(\`  ✅ Created doppler.yaml (project=\${APP_NAME}, config=dev)\`)
+    await fs.writeFile(dopplerYamlPath, `setup:\n  project: ${APP_NAME}\n  config: dev\n`, 'utf-8')
+    console.log(`  ✅ Created doppler.yaml (project=${APP_NAME}, config=dev)`)
   } catch (error: any) {
-    console.warn(\`  ⚠️ Failed to explicitly write doppler.yaml: \${error.message}\`)
+    console.warn(`  ⚠️ Failed to explicitly write doppler.yaml: ${error.message}`)
   }
 
   if (!DOPPLER_AVAILABLE) {
@@ -607,11 +607,11 @@ Pushes to \`main\` are automatically built and deployed via the GitHub Actions C
     console.log('  ⏭ Running in CI; skipping local Doppler setup command.')
   } else {
     try {
-      execSync(\`doppler setup --project \${APP_NAME} --config dev\`, { encoding: 'utf-8', stdio: 'pipe' })
-      console.log(\`  ✅ Local Doppler environment configured for project: \${APP_NAME} (dev config)\`)
+      execSync(`doppler setup --project ${APP_NAME} --config dev`, { encoding: 'utf-8', stdio: 'pipe' })
+      console.log(`  ✅ Local Doppler environment configured for project: ${APP_NAME} (dev config)`)
     } catch (error: any) {
       const stderr = error.stderr || error.message || ''
-      console.warn(\`  ⚠️ Failed to configure local Doppler environment: \${stderr}\`)
+      console.warn(`  ⚠️ Failed to configure local Doppler environment: ${stderr}`)
     }
   }
 
