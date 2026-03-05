@@ -44,7 +44,8 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
     if ((urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') && cf?.env?.ASSETS) {
       let path = urlObj.pathname
       if (path === '' || path === '/') path = '/favicon.ico'
-      response = await cf.env.ASSETS.fetch(new Request(`http://localhost${path}`))
+      if (!path.startsWith('/')) path = `/${path}`
+      response = await cf.env.ASSETS.fetch(new Request(`${requestUrl.origin}${path}`))
     } else {
       const cacheBuster = `_fc=${Date.now()}`
       const separator = url.includes('?') ? '&' : '?'
@@ -189,7 +190,9 @@ export default defineEventHandler(async (event) => {
     
     let response: Response
     if ((urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') && cf?.env?.ASSETS) {
-      response = await cf.env.ASSETS.fetch(new Request(`http://localhost${urlObj.pathname}`))
+      let path = urlObj.pathname
+      if (!path.startsWith('/')) path = `/${path}`
+      response = await cf.env.ASSETS.fetch(new Request(`${requestUrl.origin}${path}`))
     } else {
       response = await fetch(targetUrl, {
         cache: 'no-store',
