@@ -11,6 +11,9 @@ export default defineNuxtConfig({
   // nitro-cloudflare-dev proxies D1 bindings to the local dev server
   modules: ['nitro-cloudflare-dev'],
 
+  // App-level design system extensions (animations, hero glow, card system, scroll-reveal)
+  css: ['~/assets/css/main.css'],
+
   nitro: {
     cloudflareDev: {
       configPath: resolve(__dirname, 'wrangler.json'),
@@ -23,6 +26,11 @@ export default defineNuxtConfig({
 
   colorMode: {
     preference: 'light',
+  },
+
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+    layoutTransition: { name: 'layout', mode: 'out-in' },
   },
 
   runtimeConfig: {

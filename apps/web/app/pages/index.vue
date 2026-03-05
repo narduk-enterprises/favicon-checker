@@ -40,6 +40,8 @@ useFAQSchema([
   },
 ])
 
+useScrollReveal()
+
 const {
   urlInput,
   isChecking,
@@ -73,7 +75,7 @@ function timeAgo(isoDate: string): string {
   return `${days}d ago`
 }
 
-const previewSizes = [16, 32, 48, 64, 128, 180]
+const previewSizes = [16, 32, 48, 64]
 
 function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
   if (source.includes('apple')) return 'neutral'
@@ -85,36 +87,41 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
 
 <template>
   <div class="min-h-screen">
-    <!-- Hero Section -->
-    <section class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-linear-to-b from-primary-100 via-transparent to-transparent dark:from-primary-950/30" />
-      <div class="relative mx-auto max-w-4xl px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-20">
-        <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/10 px-4 py-1.5 text-sm font-medium text-primary-500">
-          <UIcon name="i-lucide-shield-check" class="size-4" />
-          Bypass browser cache
+    <!-- ═══════════════════════════════════════════════════════════════════
+         HERO — URL Input is THE hero. No marketing fluff above it.
+         ═══════════════════════════════════════════════════════════════════ -->
+    <section class="hero-glow relative overflow-hidden bg-linear-to-b from-primary-50 to-transparent pb-12 pt-16 dark:from-primary-950/30 dark:to-transparent">
+      <div class="animated-gradient-bg absolute inset-0 opacity-50" />
+
+      <div class="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
+        <!-- Logo + Title -->
+        <div class="mb-8 animate-fade-in">
+          <img
+            src="/logo.png"
+            alt="Favicon Checker"
+            class="mx-auto mb-4 size-16 drop-shadow-lg"
+          >
+          <h1 class="font-display text-4xl font-extrabold tracking-tight text-default sm:text-5xl lg:text-6xl">
+            Favicon
+            <span class="bg-linear-to-r from-primary-500 to-primary-300 bg-clip-text text-transparent">Checker</span>
+          </h1>
+          <p class="mt-3 text-lg text-muted">
+            Bypass the cache. See the real favicon.
+          </p>
         </div>
 
-        <h1 class="font-display text-4xl font-bold tracking-tight text-default sm:text-5xl lg:text-6xl">
-          What's Your
-          <span class="bg-linear-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent">Real Favicon</span>?
-        </h1>
-
-        <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-          Browsers cache favicons aggressively — sometimes for weeks. Enter any URL and we'll fetch the actual current favicon directly, bypassing all caching. See exactly what your visitors see.
-        </p>
-
-        <!-- Search Form -->
+        <!-- ─── Search Form ─── -->
         <!-- eslint-disable-next-line atx/no-native-form, nuxt-ui/prefer-uform -->
         <form
           id="favicon-search-form"
-          class="mx-auto mt-10 max-w-2xl"
+          class="stagger-2 animate-slide-up"
           @submit.prevent="checkFavicon"
         >
-          <div class="flex flex-col gap-3 sm:flex-row">
+          <div class="glass-card mx-auto flex max-w-2xl flex-col gap-3 p-3 sm:flex-row sm:p-2">
             <UInput
               id="url-input"
               v-model="urlInput"
-              placeholder="Enter a URL — e.g. github.com"
+              placeholder="Enter any URL — e.g. github.com"
               size="xl"
               icon="i-lucide-globe"
               class="flex-1"
@@ -131,43 +138,41 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
               :loading="isChecking"
               :disabled="!urlInput.trim()"
               icon="i-lucide-search"
-              class="sm:w-auto"
+              class="press-effect sm:w-auto"
             >
-              {{ isChecking ? 'Checking...' : 'Check Favicon' }}
+              {{ isChecking ? 'Checking...' : 'Check' }}
             </UButton>
           </div>
         </form>
 
-        <div class="mt-4">
+        <div class="stagger-3 mt-4 animate-fade-in">
           <UButton
             variant="link"
             to="/batch"
             icon="i-lucide-layers"
             size="sm"
           >
-            Check multiple sites at once
+            Batch check multiple sites
           </UButton>
         </div>
       </div>
     </section>
 
-    <!-- Results Section -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         RESULTS
+         ═══════════════════════════════════════════════════════════════════ -->
     <section
       v-if="isChecking || result || error"
-      class="mx-auto max-w-4xl px-4 pb-16 sm:px-6"
+      class="mx-auto max-w-4xl px-4 py-12 sm:px-6"
     >
-      <!-- Loading State -->
-      <div
-        v-if="isChecking"
-        id="loading-state"
-        class="space-y-4"
-      >
+      <!-- Loading skeleton -->
+      <div v-if="isChecking" class="space-y-4">
         <div class="flex items-center gap-3 text-dimmed">
           <UIcon name="i-lucide-loader-2" class="size-5 animate-spin" />
-          <span>Fetching favicons...</span>
+          <span>Scanning favicons...</span>
         </div>
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <div v-for="i in 3" :key="i" class="card-base animate-pulse rounded-2xl p-6">
+          <div v-for="i in 3" :key="i" class="card-base animate-pulse rounded-2xl p-6" :class="`stagger-${i}`">
             <div class="mx-auto mb-4 size-16 rounded-lg bg-muted" />
             <div class="mx-auto mb-2 h-4 w-24 rounded bg-muted" />
             <div class="mx-auto h-3 w-16 rounded bg-muted" />
@@ -175,14 +180,11 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
         </div>
       </div>
 
-      <!-- Error State -->
-      <!-- eslint-disable-next-line atx/no-raw-tailwind-colors -->
+      <!-- Error -->
       <div
         v-else-if="error"
-        id="error-state"
-        class="card-base rounded-2xl border border-error-500/20 bg-error-500/5 p-8 text-center"
+        class="card-base animate-scale-in rounded-2xl p-8 text-center"
       >
-        <!-- eslint-disable-next-line atx/no-raw-tailwind-colors -->
         <UIcon name="i-lucide-alert-circle" class="mx-auto mb-4 size-12 text-error-500" />
         <h2 class="mb-2 text-xl font-semibold text-default">
           Couldn't Check Favicon
@@ -190,29 +192,17 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
         <p class="text-muted">
           {{ error }}
         </p>
-        <UButton
-          class="mt-4"
-          variant="outline"
-          icon="i-lucide-refresh-cw"
-          @click="checkFavicon"
-        >
+        <UButton class="press-effect mt-4" variant="outline" icon="i-lucide-refresh-cw" @click="checkFavicon">
           Try Again
         </UButton>
       </div>
 
       <!-- Results -->
-      <div
-        v-else-if="result"
-        id="results-container"
-        class="space-y-6"
-      >
-        <div class="flex items-center justify-between">
+      <div v-else-if="result" class="space-y-6">
+        <div class="flex animate-fade-in items-center justify-between">
           <div>
             <h2 class="text-2xl font-bold text-default">
-              <span v-if="result.favicons.length > 0">
-                Found {{ result.favicons.length }} favicon{{ result.favicons.length === 1 ? '' : 's' }}
-              </span>
-              <span v-else>No favicons found</span>
+              {{ result.favicons.length > 0 ? `Found ${result.favicons.length} favicon${result.favicons.length === 1 ? '' : 's'}` : 'No favicons found' }}
             </h2>
             <p class="mt-1 text-sm text-dimmed">
               {{ result.url }}
@@ -223,41 +213,25 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
           </UBadge>
         </div>
 
-        <!-- No favicon found -->
-        <div
-          v-if="result.favicons.length === 0"
-          class="card-base rounded-2xl p-10 text-center"
-        >
+        <!-- Empty state -->
+        <div v-if="result.favicons.length === 0" class="card-base animate-scale-in rounded-2xl p-10 text-center">
           <UIcon name="i-lucide-image-off" class="mx-auto mb-4 size-16 text-dimmed" />
           <h3 class="mb-2 text-lg font-semibold text-default">
             No Favicons Detected
           </h3>
           <p class="mx-auto max-w-md text-muted">
-            This site doesn't appear to have any favicons configured.
+            This site doesn't have any favicons configured.
           </p>
-          <div class="mx-auto mt-6 max-w-md text-left">
-            <h4 class="mb-3 text-sm font-semibold text-default">
-              To add a favicon to your site:
-            </h4>
-            <ol class="space-y-2 text-sm text-muted">
-              <li>1. Place a <code class="rounded bg-muted px-1">favicon.ico</code> in your site root</li>
-              <li>2. Add <code class="rounded bg-muted px-1">&lt;link rel="icon" href="/favicon.ico"&gt;</code> to your HTML</li>
-              <li>3. Add an Apple Touch Icon: <code class="rounded bg-muted px-1">&lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;</code></li>
-            </ol>
-          </div>
         </div>
 
-        <!-- Favicon Grid -->
-        <div
-          v-else
-          class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <!-- Favicon grid -->
+        <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <article
             v-for="(favicon, index) in result.favicons"
             :key="index"
-            class="card-base group cursor-pointer rounded-2xl p-6 transition-all duration-200 hover:shadow-elevated"
+            class="card-interactive animate-slide-up-sm group rounded-2xl p-6"
+            :style="{ animationDelay: `${index * 0.08}s` }"
           >
-            <!-- Large Preview -->
             <div class="mb-4 flex items-center justify-center rounded-xl bg-elevated p-6">
               <img
                 :src="favicon.dataUrl"
@@ -267,18 +241,12 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
               >
             </div>
 
-            <!-- Source Badge -->
             <div class="mb-3">
-              <UBadge
-                :color="getSourceBadgeColor(favicon.source)"
-                variant="subtle"
-                size="sm"
-              >
+              <UBadge :color="getSourceBadgeColor(favicon.source)" variant="subtle" size="sm">
                 {{ favicon.source }}
               </UBadge>
             </div>
 
-            <!-- Info -->
             <div class="space-y-1 text-sm">
               <div class="flex items-center justify-between">
                 <span class="text-dimmed">Type</span>
@@ -290,32 +258,14 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
               </div>
             </div>
 
-            <!-- Multi-size Preview -->
             <div class="mt-4 flex items-end gap-2">
-              <div
-                v-for="size in previewSizes.filter(s => s <= 64)"
-                :key="size"
-                class="flex flex-col items-center gap-1"
-              >
-                <img
-                  :src="favicon.dataUrl"
-                  :alt="`${size}×${size} preview`"
-                  :style="{ width: `${size}px`, height: `${size}px` }"
-                  class="object-contain"
-                  loading="lazy"
-                >
+              <div v-for="size in previewSizes" :key="size" class="flex flex-col items-center gap-1">
+                <img :src="favicon.dataUrl" :alt="`${size}px`" :style="{ width: `${size}px`, height: `${size}px` }" class="object-contain" loading="lazy">
                 <span class="text-[10px] text-dimmed">{{ size }}</span>
               </div>
             </div>
 
-            <!-- Download Button -->
-            <UButton
-              class="mt-4 w-full"
-              variant="soft"
-              size="sm"
-              icon="i-lucide-download"
-              @click="downloadFavicon(favicon)"
-            >
+            <UButton class="press-effect mt-4 w-full" variant="soft" size="sm" icon="i-lucide-download" @click="downloadFavicon(favicon)">
               Download
             </UButton>
           </article>
@@ -323,46 +273,48 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
       </div>
     </section>
 
-    <!-- How It Works Section -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         HOW IT WORKS (only when no result shown)
+         ═══════════════════════════════════════════════════════════════════ -->
     <section
       v-if="!result && !isChecking && !error"
-      class="mx-auto max-w-5xl px-4 pb-20 sm:px-6"
+      class="mx-auto max-w-5xl px-4 pb-16 sm:px-6"
     >
-      <h2 class="mb-12 text-center text-3xl font-bold text-default">
+      <h2 class="reveal-on-scroll mb-10 text-center text-3xl font-bold text-default">
         How It Works
       </h2>
-      <div class="grid gap-8 sm:grid-cols-3">
-        <div class="text-center rounded-2xl p-6 transition-all duration-200 hover:shadow-elevated hover:-translate-y-0.5">
-          <div class="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500/10">
-            <UIcon name="i-lucide-link" class="size-8 text-primary-500" />
+      <div class="grid gap-6 sm:grid-cols-3">
+        <div class="reveal-on-scroll card-interactive rounded-2xl p-6 text-center" data-delay="1">
+          <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary-500/10">
+            <UIcon name="i-lucide-link" class="size-7 text-primary-500" />
           </div>
-          <h3 class="mb-2 text-lg font-semibold text-default">
+          <h3 class="mb-2 font-semibold text-default">
             1. Enter a URL
           </h3>
           <p class="text-sm text-muted">
-            Paste any website URL — we'll handle the rest, including URL validation and normalization.
+            Paste any website URL — we handle validation and normalization.
           </p>
         </div>
-        <div class="text-center rounded-2xl p-6 transition-all duration-200 hover:shadow-elevated hover:-translate-y-0.5">
-          <div class="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500/10">
-            <UIcon name="i-lucide-scan-search" class="size-8 text-primary-500" />
+        <div class="reveal-on-scroll card-interactive rounded-2xl p-6 text-center" data-delay="2">
+          <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary-500/10">
+            <UIcon name="i-lucide-scan-search" class="size-7 text-primary-500" />
           </div>
-          <h3 class="mb-2 text-lg font-semibold text-default">
-            2. We Fetch & Scan
+          <h3 class="mb-2 font-semibold text-default">
+            2. We Fetch &amp; Scan
           </h3>
           <p class="text-sm text-muted">
-            Our server fetches the page HTML, parses link tags, checks /favicon.ico, and reads web manifests — all with cache-busting headers.
+            HTML parsing, manifest reading, and cache-busting fetch — all server-side.
           </p>
         </div>
-        <div class="text-center rounded-2xl p-6 transition-all duration-200 hover:shadow-elevated hover:-translate-y-0.5">
-          <div class="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500/10">
-            <UIcon name="i-lucide-eye" class="size-8 text-primary-500" />
+        <div class="reveal-on-scroll card-interactive rounded-2xl p-6 text-center" data-delay="3">
+          <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary-500/10">
+            <UIcon name="i-lucide-eye" class="size-7 text-primary-500" />
           </div>
-          <h3 class="mb-2 text-lg font-semibold text-default">
-            3. You See the Truth
+          <h3 class="mb-2 font-semibold text-default">
+            3. See the Truth
           </h3>
           <p class="text-sm text-muted">
-            Every discovered favicon is displayed at multiple sizes with download links. No more guessing whether your favicon updated.
+            Every favicon displayed at multiple sizes with download links.
           </p>
         </div>
       </div>
@@ -371,17 +323,18 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
     <!-- Recent Checks -->
     <section
       v-if="recentChecks && recentChecks.length > 0 && !isChecking"
-      class="mx-auto max-w-4xl px-4 pb-20 sm:px-6"
+      class="mx-auto max-w-4xl px-4 pb-16 sm:px-6"
     >
-      <h2 class="mb-6 text-lg font-semibold text-default">
-        Recent Favicon Checks
+      <h2 class="reveal-on-scroll mb-6 text-lg font-semibold text-default">
+        Recent Checks
       </h2>
       <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <UButton
-          v-for="check in recentChecks"
+          v-for="(check, i) in recentChecks"
           :key="check.id"
           variant="ghost"
-          class="card-base flex items-center gap-3 rounded-xl p-3 text-left transition-all duration-200 hover:shadow-elevated"
+          class="reveal-on-scroll card-interactive flex items-center gap-3 rounded-xl p-3 text-left"
+          :data-delay="(i % 4) + 1"
           @click="recheckUrl(check.url)"
         >
           <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary-500/10">
@@ -399,43 +352,24 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
       </div>
     </section>
 
-    <!-- FAQ Section -->
+    <!-- FAQ -->
     <section class="mx-auto max-w-3xl px-4 pb-20 sm:px-6">
-      <h2 class="mb-8 text-center text-3xl font-bold text-default">
-        Frequently Asked Questions
+      <h2 class="reveal-on-scroll mb-8 text-center text-3xl font-bold text-default">
+        FAQ
       </h2>
-      <UAccordion
-        :items="[
-          {
-            label: 'Why isn\'t my favicon updating in the browser?',
-            content: 'Browsers cache favicons aggressively, sometimes for weeks or even months. Even clearing your browser cache may not help because favicons are often cached in a separate database. This tool fetches the favicon directly from your server, bypassing all browser caching mechanisms so you can verify the actual current state.',
-          },
-          {
-            label: 'What sizes should a favicon be?',
-            content: 'Modern websites should include: a 16×16 ICO or PNG for browser tabs, 32×32 for higher DPI displays, 180×180 Apple Touch Icon for iOS home screens, and 192×192 plus 512×512 PNG icons in a web manifest for Android. SVG favicons are increasingly supported and scale perfectly to any size.',
-          },
-          {
-            label: 'How does this favicon checker work?',
-            content: 'We fetch your website\'s HTML directly from the server side, parse all link tags for icons and apple-touch-icons, plus web manifest references. Then we download each favicon image with cache-busting query parameters and no-store cache headers. This completely bypasses your browser\'s favicon cache.',
-          },
-          {
-            label: 'What favicon formats are supported?',
-            content: 'This tool detects and displays all common favicon formats including ICO, PNG, SVG, GIF, and WEBP. It finds favicons declared in HTML link tags, the default /favicon.ico location, and web app manifest files (site.webmanifest or manifest.json).',
-          },
-          {
-            label: 'Is this tool free to use?',
-            content: 'Yes, Favicon Checker is completely free. We limit checks to 10 per minute per IP address to prevent abuse, but there are no other restrictions. No sign-up required.',
-          },
-        ]"
-      />
+      <div class="reveal-on-scroll">
+        <UAccordion
+          :items="[
+            { label: 'Why isn\'t my favicon updating?', content: 'Browsers cache favicons aggressively, sometimes for weeks. This tool fetches directly from your server, bypassing all browser caching.' },
+            { label: 'What sizes should a favicon be?', content: '16×16 for tabs, 32×32 for high DPI, 180×180 Apple Touch Icon, and 192/512px in a web manifest.' },
+            { label: 'How does it work?', content: 'We fetch HTML server-side, parse link tags and manifests, then download each favicon with cache-busting headers.' },
+            { label: 'What formats are supported?', content: 'ICO, PNG, SVG, GIF, and WEBP — from HTML link tags, /favicon.ico, and web app manifests.' },
+            { label: 'Is it free?', content: 'Yes, completely free. Rate limited to 10 checks/minute per IP.' },
+          ]"
+        />
+      </div>
     </section>
 
-    <!-- Footer -->
-    <div class="border-t border-default py-8">
-      <div class="mx-auto max-w-4xl px-4 text-center text-sm text-dimmed sm:px-6">
-        <!-- eslint-disable-next-line atx/prefer-ulink -->
-        <p>Favicon Checker — A free developer tool by <a href="https://nard.uk" target="_blank" rel="noopener" class="text-primary-500 hover:underline">Narduk</a>.</p>
-      </div>
-    </div>
+    <ScrollToTop />
   </div>
 </template>
