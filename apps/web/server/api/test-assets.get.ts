@@ -4,9 +4,7 @@ export default defineEventHandler(async (event) => {
     type CFContext = { cloudflare?: { env?: { ASSETS?: { fetch: (req: Request | string) => Promise<Response> } } } }
     const cf = (event.context as unknown as CFContext).cloudflare
     
-    if (!cf?.env?.ASSETS) {
-      return { success: false, reason: 'No ASSETS binding found' }
-    }
+
 
     // Try a few variations to see which one works
     const results = []
