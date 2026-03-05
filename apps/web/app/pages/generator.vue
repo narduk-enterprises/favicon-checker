@@ -112,12 +112,12 @@ function downloadSingle(fav: GeneratedFavicon) {
 }
 
 async function downloadAll() {
-  // Dynamic import JSZip from CDN
-  const { default: JsZip } = await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm' as string)
+  // Dynamic import to keep it client-side only and tree-shake on SSR
+  const { default: JsZip } = await import('jszip')
   const zip = new JsZip()
 
   for (const fav of generated.value) {
-    const base64 = fav.dataUrl.split(',')[1]
+    const base64 = fav.dataUrl.split(',')[1] ?? ''
     const filename = fav.size === 180 ? 'apple-touch-icon.png' : `favicon-${fav.size}x${fav.size}.png`
     zip.file(filename, base64, { base64: true })
   }
