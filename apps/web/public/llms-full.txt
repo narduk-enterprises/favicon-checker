@@ -1,0 +1,88 @@
+# Favicon Checker Tool — Full Documentation
+
+> A comprehensive favicon toolkit: check, audit, generate, convert, and monitor favicons for any website. Built on Cloudflare Workers with Nuxt 4.
+
+## Architecture
+- **Runtime**: Cloudflare Workers (cloudflare-module preset)
+- **Framework**: Nuxt 4, Vue 3
+- **Database**: Cloudflare D1 (SQLite)
+- **ORM**: Drizzle
+- **UI**: Nuxt UI 4, Tailwind CSS v4
+
+## Core Features
+
+### Favicon Checker (Homepage)
+The main tool checks any URL for favicons by fetching HTML server-side, parsing `<link>` tags and web manifests, then downloading each favicon with cache-busting headers. Returns all detected favicons with type, sizes, source, and base64 data URLs.
+
+### Audit Score
+Every check produces a 0–100 audit score evaluating:
+- Has any favicon (20pts)
+- Has ICO fallback (10pts)
+- Has PNG format (10pts)
+- Has SVG format (10pts)
+- Has Apple Touch Icon (15pts)
+- Has web manifest icons (10pts)
+- Has high-DPI (32×32+) size (10pts)
+- Has 3+ different sizes (15pts)
+
+Grade: A+ (95+), A (80+), B (65+), C (50+), D (30+), F (<30)
+
+### Batch Checker
+Check multiple domains simultaneously. Accepts newline, comma-separated, or JSON array input. Results saved per-domain for SSR pages.
+
+### Favicon Generator
+Client-side tool using Canvas API to resize uploaded images to all standard favicon sizes: 16, 32, 48, 180, 192, 512. Downloads as ZIP with site.webmanifest and HTML code.
+
+### Tools
+- **ICO to PNG**: Client-side format conversion
+- **SVG to Favicon**: Generate all sizes from SVG
+- **Favicon Size Checker**: Analyze dimensions, format, transparency
+
+### Guide
+2000+ word authoritative guide covering favicon sizes, formats (ICO, PNG, SVG, WEBP), implementation code, dark mode SVG, common mistakes, and testing workflow.
+
+### Gallery
+Curated showcase of 24 notable favicons across 6 industries (Tech, Dev Tools, Social, News, E-commerce, Entertainment). Each links to its /check/ page.
+
+### Trends
+Live aggregation of favicon adoption data from all checked domains. Shows format breakdown (ICO, PNG, SVG, Apple Touch, Manifest) and average audit scores.
+
+### Monitor
+Client-side watchlist (localStorage) for tracking favicon changes. Add domains, re-check, and detect when favicon count or audit score changes.
+
+### Comparisons
+Honest feature comparisons vs RealFaviconGenerator and favicon.io.
+
+## API Reference
+
+### GET /api/favicon?url={url}
+Check a URL's favicons.
+- **Rate limit**: 10/minute per IP
+- **Response**: `{ url, favicons[], auditScore, auditGrade, auditChecks[], checkedAt }`
+- Each favicon: `{ href, type, sizes, source, dataUrl }`
+
+### GET /api/domain/{domain}
+Retrieve cached results for a domain.
+- **Response**: `{ domain, url, faviconCount, auditScore, auditGrade, auditChecks[], checkedAt, favicons[] }`
+
+### GET /api/recent
+Get 20 most recent checks.
+- **Response**: `[{ id, domain, url, faviconCount, checkedAt }]`
+
+### GET /api/stats/trends
+Aggregated favicon statistics.
+- **Response**: `{ totalDomains, avgFaviconCount, avgAuditScore, withIco, withPng, withSvg, withApple, withManifest }`
+
+### POST /api/seed-popular
+Seed database with popular domain checks (admin, rate limited 1/5min).
+- **Response**: `{ total, checked, errors, results[] }`
+
+## Database Schema
+Table `favicon_checks`:
+- `id` INTEGER PRIMARY KEY
+- `url` TEXT NOT NULL
+- `domain` TEXT NOT NULL
+- `favicon_count` INTEGER DEFAULT 0
+- `audit_score` INTEGER DEFAULT 0
+- `result_json` TEXT (JSON array of favicon objects)
+- `checked_at` TEXT (ISO 8601)

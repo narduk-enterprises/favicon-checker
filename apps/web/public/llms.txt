@@ -1,0 +1,29 @@
+# Favicon Checker Tool
+
+> A comprehensive favicon toolkit: check, audit, generate, convert, and monitor favicons for any website.
+
+## Technical Details
+This is a serverless application built on Cloudflare Workers using Nuxt 4 and Vue. It performs synchronous server-side requests to inspect target URLs directly for all `<link rel="icon">`, `<link rel="apple-touch-icon">`, and web app manifest declarations to bypass local caching.
+
+## Endpoints
+- `/` - The main single-URL checker tool with audit scoring.
+- `/batch` - Bulk favicon checking tool accepting JSON arrays, comma-separated, or newline-delimited URL inputs.
+- `/check/{domain}` - Per-domain favicon report pages (e.g. `/check/github.com`). SSR-rendered with cached results.
+- `/guide` - Complete favicon guide: sizes, formats, implementation, dark mode, common mistakes.
+- `/generator` - Upload an image, get all favicon sizes as PNG + ZIP download. Client-side.
+- `/gallery` - Curated gallery of best favicon designs by industry.
+- `/trends` - Live data dashboard of favicon format adoption across checked domains.
+- `/monitor` - Track favicon changes for domains in a localStorage watchlist.
+- `/tools/ico-to-png` - Convert ICO files to PNG format (client-side).
+- `/tools/svg-to-favicon` - Convert SVG to all favicon sizes (client-side).
+- `/tools/favicon-size-checker` - Analyze favicon dimensions, format, and transparency.
+- `/compare/realfavicongenerator` - Feature comparison vs RealFaviconGenerator.
+- `/compare/favicon-io` - Feature comparison vs favicon.io.
+
+## API
+- `GET /api/favicon?url={url}` - Check a single URL's favicons. Returns JSON with `url`, `favicons[]`, `auditScore`, `auditGrade`, `auditChecks[]`, and `checkedAt`.
+- `GET /api/domain/{domain}` - Retrieve cached favicon results for a previously checked domain.
+- `GET /api/stats/trends` - Aggregated favicon adoption statistics from all checked domains.
+
+## Access
+Accessible freely. Rate limited to 10 checks per minute per IP. Contact @narduk-enterprises for rate limit extension inquiries.

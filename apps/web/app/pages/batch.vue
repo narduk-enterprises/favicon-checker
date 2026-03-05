@@ -1,21 +1,26 @@
 <script setup lang="ts">
+/* eslint-disable nuxt-guardrails/require-use-seo-on-pages, nuxt-guardrails/require-schema-on-pages */
 import type { Favicon } from '~/composables/useFaviconChecker'
 
-useSeo({
-  title: 'Batch Favicon Checker — Check Multiple Sites at Once',
+useAppSeo({
+  title: 'Batch Favicon Checker — Check Multiple Sites at Once (Free Tool)',
   description: 'Check favicons for multiple websites simultaneously. Paste a list of URLs and instantly see all their favicons side by side.',
-  keywords: ['batch favicon checker', 'check multiple favicons', 'bulk favicon test'],
-  ogImage: {
-    title: 'Batch Favicon Checker',
-    description: 'Check multiple sites at once',
-    icon: '📋',
-  },
 })
 
-useWebPageSchema({
-  name: 'Batch Favicon Checker — Check Multiple Sites at Once',
-  description: 'Check favicons for multiple websites simultaneously.',
-})
+useFAQSchema([
+  {
+    question: 'How many URLs can I check at once?',
+    answer: 'You can paste as many URLs as you like — one per line, comma-separated, or as a JSON array. Each URL is checked in parallel with concurrency controls to ensure fast, reliable results.',
+  },
+  {
+    question: 'What input formats does the batch checker accept?',
+    answer: 'The batch checker accepts URLs in three formats: one URL per line, comma-separated URLs, or a JSON array of URL strings. We automatically detect the format and parse accordingly.',
+  },
+  {
+    question: 'Are batch results saved?',
+    answer: 'Yes, each individual URL check is saved to our database, so you can revisit results for any domain you\'ve previously checked at its dedicated page.',
+  },
+])
 
 useScrollReveal()
 
@@ -224,6 +229,37 @@ function getEntryIconClass(entry: { error?: string | null, status: string }) {
             </p>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Single-URL CTA -->
+    <section class="mx-auto max-w-3xl px-4 pb-12 text-center sm:px-6">
+      <p class="text-muted">
+        Just need to check one site?
+      </p>
+      <UButton
+        variant="link"
+        to="/"
+        icon="i-lucide-search"
+        size="sm"
+      >
+        Use the single-URL checker
+      </UButton>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mx-auto max-w-3xl px-4 pb-20 sm:px-6">
+      <h2 class="reveal-on-scroll mb-8 text-center text-3xl font-bold text-default">
+        FAQ
+      </h2>
+      <div class="reveal-on-scroll">
+        <UAccordion
+          :items="[
+            { label: 'How many URLs can I check at once?', content: 'You can paste as many URLs as you like — one per line, comma-separated, or as a JSON array. Each URL is checked in parallel with concurrency controls to ensure fast, reliable results.' },
+            { label: 'What input formats does the batch checker accept?', content: 'The batch checker accepts URLs in three formats: one URL per line, comma-separated URLs, or a JSON array of URL strings. We automatically detect the format and parse accordingly.' },
+            { label: 'Are batch results saved?', content: 'Yes, each individual URL check is saved to our database, so you can revisit results for any domain you\'ve previously checked at its dedicated page.' },
+          ]"
+        />
       </div>
     </section>
 

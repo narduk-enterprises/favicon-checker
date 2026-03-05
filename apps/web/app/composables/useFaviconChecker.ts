@@ -6,9 +6,19 @@ interface Favicon {
   dataUrl: string
 }
 
+interface AuditCheck {
+  name: string
+  passed: boolean
+  weight: number
+  detail: string
+}
+
 interface FaviconResult {
   url: string
   favicons: Favicon[]
+  auditScore: number
+  auditGrade: string
+  auditChecks: AuditCheck[]
   checkedAt: string
 }
 

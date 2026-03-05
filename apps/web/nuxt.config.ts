@@ -47,6 +47,7 @@ export default defineNuxtConfig({
     gaPropertyId: process.env.GA_PROPERTY_ID || '',
     posthogProjectId: process.env.POSTHOG_PROJECT_ID || '',
     public: {
+      siteUrl: process.env.SITE_URL || 'https://favicon-checker.nard.uk',
       appUrl: process.env.SITE_URL || 'https://favicon-checker.nard.uk',
       appName: process.env.APP_NAME || 'Favicon Checker',
       // Analytics
@@ -66,12 +67,22 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
   },
 
+  sitemap: {
+    sources: ['/api/__sitemap__/domains'],
+    defaults: {
+      lastmod: new Date().toISOString(),
+      changefreq: 'weekly',
+      priority: 0.8,
+    },
+  },
+
   schemaOrg: {
     identity: {
-      type: 'Organization',
+      type: 'WebApplication',
       name: 'Favicon Checker',
       url: process.env.SITE_URL || 'https://favicon-checker.nard.uk',
       logo: '/favicon.svg',
+      applicationCategory: 'DeveloperApplication',
     },
   },
 

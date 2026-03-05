@@ -44,7 +44,7 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
       if (path === '' || path === '/') path = '/favicon.ico'
       if (!path.startsWith('/')) path = `/${path}`
       
-      const storageKey = path.slice(1).replace(/\//g, ':')
+      const storageKey = path.slice(1).replaceAll('/', ':')
       const buffer = await useStorage('assets:public').getItemRaw(storageKey)
       
       if (!buffer) return { dataUrl: null, type: '' }
@@ -61,8 +61,7 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
       } else {
         // Handle Buffer or other object types that might be returned in different environments
         try {
-          // @ts-ignore - buffer constructor fallback
-          bytes = new Uint8Array(buffer)
+          bytes = new Uint8Array(buffer as ArrayBufferLike)
         } catch {
           return { dataUrl: null, type: contentType }
         }
@@ -285,13 +284,18 @@ export default defineEventHandler(async (event) => {
 
   const checkedAt = new Date().toISOString()
 
-  // Save to database
+  // Compute audit score
+  const audit = computeAuditScore(validFavicons)
+
+  // Save to database (including full result JSON for /check/[domain] SSR pages)
   try {
     const db = useAppDatabase(event)
     await db.insert(faviconChecks).values({
       url: targetUrl,
       domain: urlObj.hostname,
       faviconCount: validFavicons.length,
+      auditScore: audit.score,
+      resultJson: JSON.stringify(validFavicons),
       checkedAt,
     })
   }
@@ -299,9 +303,30 @@ export default defineEventHandler(async (event) => {
     // Database save is best-effort, don't block the response
   }
 
+  // Fire-and-forget IndexNow ping for the per-domain page
+  try {
+    const config = useRuntimeConfig()
+    const siteUrl = config.public.siteUrl || config.public.appUrl
+    if (siteUrl && config.public.indexNowKey) {
+      const domainPageUrl = `${siteUrl}/check/${urlObj.hostname}`
+      $fetch('/api/indexnow/submit', {
+        method: 'POST',
+        body: { urls: [domainPageUrl] },
+      }).catch(() => {
+        // IndexNow ping is best-effort
+      })
+    }
+  }
+  catch {
+    // IndexNow is best-effort
+  }
+
   return {
     url: targetUrl,
     favicons: validFavicons,
+    auditScore: audit.score,
+    auditGrade: audit.grade,
+    auditChecks: audit.checks,
     checkedAt,
   }
 })

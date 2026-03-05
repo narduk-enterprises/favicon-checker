@@ -1,20 +1,10 @@
 <script setup lang="ts">
+/* eslint-disable nuxt-guardrails/require-use-seo-on-pages, nuxt-guardrails/require-schema-on-pages */
 import type { Favicon } from '~/composables/useFaviconChecker'
 
-useSeo({
-  title: 'Favicon Checker — See Your Real Favicon Instantly',
-  description: 'Free online tool to check any website\'s favicon. Bypass browser cache and see the real favicon instantly. Test all favicon sizes including Apple Touch Icon, ICO, and PNG favicons.',
-  keywords: ['favicon checker', 'check website favicon', 'favicon checker tool', 'test favicon', 'preview favicon online', 'favicon not updating', 'website favicon tester', 'favicon preview'],
-  ogImage: {
-    title: 'Favicon Checker',
-    description: 'See your real favicon, bypass the cache',
-    icon: '🔍',
-  },
-})
-
-useWebPageSchema({
-  name: 'Favicon Checker — Free Online Favicon Testing Tool',
-  description: 'Check any website\'s favicon by URL. Bypass aggressive browser caching and see the actual current favicon. Supports ICO, PNG, SVG, and Apple Touch Icon formats.',
+useAppSeo({
+  title: 'Favicon Checker — See Your Real Favicon Instantly (Free Tool)',
+  description: 'Free favicon checker, validator & audit tool. Bypass browser cache and see real favicons instantly. Test all sizes including Apple Touch Icon, ICO, PNG, and SVG. Also works as a favicon tester and size checker.',
 })
 
 useFAQSchema([
@@ -40,6 +30,17 @@ useFAQSchema([
   },
 ])
 
+useSchemaOrg([
+  defineHowTo({
+    name: 'How to Check a Website\'s Favicon',
+    step: [
+      defineHowToStep({ text: 'Enter a URL — paste any website URL and we handle validation and normalization.' }),
+      defineHowToStep({ text: 'We fetch and scan — HTML parsing, manifest reading, and cache-busting fetch, all server-side.' }),
+      defineHowToStep({ text: 'See the truth — every favicon displayed at multiple sizes with download links.' }),
+    ],
+  }),
+])
+
 useScrollReveal()
 
 const {
@@ -49,7 +50,6 @@ const {
   error,
   recentChecks,
   checkFavicon,
-  recheckUrl,
 } = useFaviconChecker()
 
 function downloadFavicon(favicon: Favicon) {
@@ -107,6 +107,9 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
           </h1>
           <p class="mt-3 text-lg text-muted">
             Bypass the cache. See the real favicon.
+          </p>
+          <p class="mt-1 text-sm text-dimmed">
+            Favicon validator · Favicon tester · Favicon audit · Favicon size checker
           </p>
         </div>
 
@@ -270,6 +273,22 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
             </UButton>
           </article>
         </div>
+
+        <!-- Audit Score -->
+        <FaviconAuditScore
+          v-if="result.auditScore !== undefined"
+          :score="result.auditScore"
+          :grade="result.auditGrade"
+          :checks="result.auditChecks"
+          class="animate-slide-up-sm stagger-4"
+        />
+
+        <!-- Code Snippets -->
+        <FaviconCodeSnippet
+          v-if="result.favicons.length > 0"
+          :favicons="result.favicons"
+          class="animate-slide-up-sm stagger-5"
+        />
       </div>
     </section>
 
@@ -320,6 +339,242 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════════════
+         WHY FAVICONS MATTER
+         ═══════════════════════════════════════════════════════════════════ -->
+    <section
+      v-if="!result && !isChecking && !error"
+      class="mx-auto max-w-5xl px-4 pb-16 sm:px-6"
+    >
+      <h2 class="reveal-on-scroll mb-6 text-center text-3xl font-bold text-default">
+        Why Favicons Matter
+      </h2>
+      <div class="reveal-on-scroll card-base mx-auto max-w-3xl space-y-4 rounded-2xl p-8">
+        <p class="text-muted leading-relaxed">
+          A favicon is often the <strong class="text-default">first visual element</strong> users associate with your brand. It appears in browser tabs, bookmarks, search results, and mobile home screens. A missing or broken favicon signals neglect and erodes trust — studies show users are more likely to leave sites that feel unprofessional.
+        </p>
+        <p class="text-muted leading-relaxed">
+          Modern favicons go far beyond the classic 16×16 ICO file. Today's web demands <strong class="text-default">multiple sizes and formats</strong>: SVG for sharp rendering at any scale, Apple Touch Icons for iOS home screens, and web manifest icons for Android PWA installs. Getting this right means your brand looks polished everywhere.
+        </p>
+        <p class="text-muted leading-relaxed">
+          The biggest problem? <strong class="text-default">Browser caching</strong>. Browsers cache favicons separately from regular assets, sometimes for months. You can deploy a new favicon and never see it update — this tool solves that by fetching directly from your server, completely bypassing the cache.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         SUPPORTED FORMATS
+         ═══════════════════════════════════════════════════════════════════ -->
+    <section
+      v-if="!result && !isChecking && !error"
+      class="mx-auto max-w-5xl px-4 pb-16 sm:px-6"
+    >
+      <h2 class="reveal-on-scroll mb-6 text-center text-3xl font-bold text-default">
+        Supported Favicon Formats
+      </h2>
+      <div class="reveal-on-scroll grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            v-for="fmt in [
+              { name: 'ICO', bestFor: 'Legacy tabs, /favicon.ico', transparency: '✅ Yes', support: 'Universal' },
+              { name: 'PNG', bestFor: 'Modern browsers, Apple Touch', transparency: '✅ Yes', support: 'Universal' },
+              { name: 'SVG', bestFor: 'Scalable, dark mode', transparency: '✅ Yes', support: 'Chrome, Firefox, Edge' },
+              { name: 'WEBP', bestFor: 'Smaller file sizes', transparency: '✅ Yes', support: 'Chrome, Firefox, Edge' },
+              { name: 'GIF', bestFor: 'Animated favicons (rare)', transparency: '⚠️ Limited', support: 'Most browsers' },
+            ]"
+            :key="fmt.name"
+            class="card-base rounded-2xl p-5"
+          >
+            <p class="mb-2 text-lg font-mono font-bold text-primary-500">
+              {{ fmt.name }}
+            </p>
+            <p class="text-sm text-muted">
+              <span class="font-medium text-default">Best for:</span> {{ fmt.bestFor }}
+            </p>
+            <p class="text-sm text-muted">
+              <span class="font-medium text-default">Transparency:</span> {{ fmt.transparency }}
+            </p>
+            <p class="text-sm text-muted">
+              <span class="font-medium text-default">Support:</span> {{ fmt.support }}
+            </p>
+          </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         COMMON FAVICON PROBLEMS
+         ═══════════════════════════════════════════════════════════════════ -->
+    <section
+      v-if="!result && !isChecking && !error"
+      class="mx-auto max-w-5xl px-4 pb-16 sm:px-6"
+    >
+      <h2 class="reveal-on-scroll mb-6 text-center text-3xl font-bold text-default">
+        Common Favicon Problems
+      </h2>
+      <div class="reveal-on-scroll grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="card-interactive rounded-2xl p-6">
+          <div class="mb-3 flex size-10 items-center justify-center rounded-xl bg-error-500/10">
+            <UIcon name="i-lucide-refresh-cw-off" class="size-5 text-error-500" />
+          </div>
+          <h3 class="mb-2 font-semibold text-default">
+            Favicon Not Updating
+          </h3>
+          <p class="text-sm text-muted">
+            Browsers cache favicons in a separate database from normal web cache. Clearing your browser cache won't help — you need to access the favicon URL directly and hard-refresh, or use this tool.
+          </p>
+        </div>
+        <div class="card-interactive rounded-2xl p-6">
+          <div class="mb-3 flex size-10 items-center justify-center rounded-xl bg-warning-500/10">
+            <UIcon name="i-lucide-file-warning" class="size-5 text-warning-500" />
+          </div>
+          <h3 class="mb-2 font-semibold text-default">
+            Wrong Path or Missing File
+          </h3>
+          <p class="text-sm text-muted">
+            The most common issue is a broken path in the HTML. Check that your <code class="rounded bg-elevated px-1">&lt;link rel="icon"&gt;</code> href actually resolves to a real file on your server.
+          </p>
+        </div>
+        <div class="card-interactive rounded-2xl p-6">
+          <div class="mb-3 flex size-10 items-center justify-center rounded-xl bg-info-500/10">
+            <UIcon name="i-lucide-file-json" class="size-5 text-info-500" />
+          </div>
+          <h3 class="mb-2 font-semibold text-default">
+            Missing Web Manifest
+          </h3>
+          <p class="text-sm text-muted">
+            Android devices and PWA installs rely on <code class="rounded bg-elevated px-1">site.webmanifest</code> for their icons. Without it, your app will show a generic icon on home screens.
+          </p>
+        </div>
+        <div class="card-interactive rounded-2xl p-6">
+          <div class="mb-3 flex size-10 items-center justify-center rounded-xl bg-warning-500/10">
+            <UIcon name="i-lucide-image-off" class="size-5 text-warning-500" />
+          </div>
+          <h3 class="mb-2 font-semibold text-default">
+            Wrong MIME Type
+          </h3>
+          <p class="text-sm text-muted">
+            Serving a PNG as <code class="rounded bg-elevated px-1">image/x-icon</code> or an ICO as <code class="rounded bg-elevated px-1">image/png</code> can cause some browsers to silently ignore the favicon.
+          </p>
+        </div>
+        <div class="card-interactive rounded-2xl p-6">
+          <div class="mb-3 flex size-10 items-center justify-center rounded-xl bg-error-500/10">
+            <UIcon name="i-lucide-smartphone" class="size-5 text-error-500" />
+          </div>
+          <h3 class="mb-2 font-semibold text-default">
+            Missing Apple Touch Icon
+          </h3>
+          <p class="text-sm text-muted">
+            iOS requires a 180×180 PNG as an Apple Touch Icon. Without it, Safari will take a screenshot of your page instead — which usually looks terrible.
+          </p>
+        </div>
+        <div class="card-interactive rounded-2xl p-6">
+          <div class="mb-3 flex size-10 items-center justify-center rounded-xl bg-info-500/10">
+            <UIcon name="i-lucide-minimize-2" class="size-5 text-info-500" />
+          </div>
+          <h3 class="mb-2 font-semibold text-default">
+            Only One Size Provided
+          </h3>
+          <p class="text-sm text-muted">
+            A single 16×16 favicon isn't enough. Provide at least 16×16, 32×32, 180×180 (Apple), and 512×512 (manifest) for crisp rendering across all devices.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         MORE TOOLS & RESOURCES
+         ═══════════════════════════════════════════════════════════════════ -->
+    <section
+      v-if="!result && !isChecking && !error"
+      class="mx-auto max-w-5xl px-4 pb-16 sm:px-6"
+    >
+      <h2 class="reveal-on-scroll mb-6 text-center text-3xl font-bold text-default">
+        More Favicon Tools
+      </h2>
+      <div class="reveal-on-scroll grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <NuxtLink to="/generator" class="card-interactive flex items-center gap-4 rounded-2xl p-5">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10">
+            <UIcon name="i-lucide-image" class="size-6 text-primary-500" />
+          </div>
+          <div>
+            <p class="font-semibold text-default">Favicon Generator</p>
+            <p class="text-sm text-muted">Upload one image, get every size</p>
+          </div>
+        </NuxtLink>
+        <NuxtLink to="/batch" class="card-interactive flex items-center gap-4 rounded-2xl p-5">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10">
+            <UIcon name="i-lucide-layers" class="size-6 text-primary-500" />
+          </div>
+          <div>
+            <p class="font-semibold text-default">Batch Check</p>
+            <p class="text-sm text-muted">Check multiple sites at once</p>
+          </div>
+        </NuxtLink>
+        <NuxtLink to="/monitor" class="card-interactive flex items-center gap-4 rounded-2xl p-5">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10">
+            <UIcon name="i-lucide-eye" class="size-6 text-primary-500" />
+          </div>
+          <div>
+            <p class="font-semibold text-default">Favicon Monitor</p>
+            <p class="text-sm text-muted">Track favicon changes over time</p>
+          </div>
+        </NuxtLink>
+        <NuxtLink to="/trends" class="card-interactive flex items-center gap-4 rounded-2xl p-5">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10">
+            <UIcon name="i-lucide-trending-up" class="size-6 text-primary-500" />
+          </div>
+          <div>
+            <p class="font-semibold text-default">Favicon Trends</p>
+            <p class="text-sm text-muted">Data on favicon adoption across the web</p>
+          </div>
+        </NuxtLink>
+        <NuxtLink to="/gallery" class="card-interactive flex items-center gap-4 rounded-2xl p-5">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10">
+            <UIcon name="i-lucide-layout-grid" class="size-6 text-primary-500" />
+          </div>
+          <div>
+            <p class="font-semibold text-default">Favicon Gallery</p>
+            <p class="text-sm text-muted">Best designs by industry</p>
+          </div>
+        </NuxtLink>
+        <NuxtLink to="/guide" class="card-interactive flex items-center gap-4 rounded-2xl p-5">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10">
+            <UIcon name="i-lucide-book-open" class="size-6 text-primary-500" />
+          </div>
+          <div>
+            <p class="font-semibold text-default">Complete Guide</p>
+            <p class="text-sm text-muted">Sizes, formats & best practices</p>
+          </div>
+        </NuxtLink>
+        <NuxtLink to="/tools/svg-to-favicon" class="card-interactive flex items-center gap-4 rounded-2xl p-5">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10">
+            <UIcon name="i-lucide-file-code" class="size-6 text-primary-500" />
+          </div>
+          <div>
+            <p class="font-semibold text-default">SVG to Favicon</p>
+            <p class="text-sm text-muted">Convert SVG to all PNG sizes</p>
+          </div>
+        </NuxtLink>
+        <NuxtLink to="/tools/ico-to-png" class="card-interactive flex items-center gap-4 rounded-2xl p-5">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10">
+            <UIcon name="i-lucide-refresh-cw" class="size-6 text-primary-500" />
+          </div>
+          <div>
+            <p class="font-semibold text-default">ICO to PNG</p>
+            <p class="text-sm text-muted">Convert .ico files to .png</p>
+          </div>
+        </NuxtLink>
+        <NuxtLink to="/tools/favicon-size-checker" class="card-interactive flex items-center gap-4 rounded-2xl p-5">
+          <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-500/10">
+            <UIcon name="i-lucide-ruler" class="size-6 text-primary-500" />
+          </div>
+          <div>
+            <p class="font-semibold text-default">Size Checker</p>
+            <p class="text-sm text-muted">Verify dimensions & transparency</p>
+          </div>
+        </NuxtLink>
+      </div>
+    </section>
+
     <!-- Recent Checks -->
     <section
       v-if="recentChecks && recentChecks.length > 0 && !isChecking"
@@ -329,13 +584,12 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
         Recent Checks
       </h2>
       <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <UButton
+        <NuxtLink
           v-for="(check, i) in recentChecks"
           :key="check.id"
-          variant="ghost"
+          :to="`/check/${check.domain}`"
           class="reveal-on-scroll card-interactive flex items-center gap-3 rounded-xl p-3 text-left"
           :data-delay="(i % 4) + 1"
-          @click="recheckUrl(check.url)"
         >
           <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary-500/10">
             <UIcon name="i-lucide-globe" class="size-5 text-primary-500" />
@@ -348,7 +602,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
               {{ check.faviconCount }} favicon{{ check.faviconCount === 1 ? '' : 's' }} · {{ timeAgo(check.checkedAt) }}
             </p>
           </div>
-        </UButton>
+        </NuxtLink>
       </div>
     </section>
 
