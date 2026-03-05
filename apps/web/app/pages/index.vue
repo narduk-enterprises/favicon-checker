@@ -232,7 +232,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
           <article
             v-for="(favicon, index) in result.favicons"
             :key="index"
-            class="card-interactive animate-slide-up-sm group rounded-2xl p-6"
+            class="card-base animate-slide-up-sm group rounded-2xl p-6"
             :style="{ animationDelay: `${index * 0.08}s` }"
           >
             <div class="mb-4 flex items-center justify-center rounded-xl bg-elevated p-6">
@@ -303,7 +303,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
         How It Works
       </h2>
       <div class="grid gap-6 sm:grid-cols-3">
-        <div class="reveal-on-scroll card-interactive rounded-2xl p-6 text-center" data-delay="1">
+        <div class="reveal-on-scroll card-base select-none rounded-2xl p-6 text-center" data-delay="1">
           <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary-500/10">
             <UIcon name="i-lucide-link" class="size-7 text-primary-500" />
           </div>
@@ -314,7 +314,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
             Paste any website URL — we handle validation and normalization.
           </p>
         </div>
-        <div class="reveal-on-scroll card-interactive rounded-2xl p-6 text-center" data-delay="2">
+        <div class="reveal-on-scroll card-base select-none rounded-2xl p-6 text-center" data-delay="2">
           <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary-500/10">
             <UIcon name="i-lucide-scan-search" class="size-7 text-primary-500" />
           </div>
@@ -325,7 +325,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
             HTML parsing, manifest reading, and cache-busting fetch — all server-side.
           </p>
         </div>
-        <div class="reveal-on-scroll card-interactive rounded-2xl p-6 text-center" data-delay="3">
+        <div class="reveal-on-scroll card-base select-none rounded-2xl p-6 text-center" data-delay="3">
           <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary-500/10">
             <UIcon name="i-lucide-eye" class="size-7 text-primary-500" />
           </div>
@@ -411,7 +411,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
         Common Favicon Problems
       </h2>
       <div class="reveal-on-scroll grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="card-interactive rounded-2xl p-6">
+        <div class="card-base select-none rounded-2xl p-6">
           <div class="mb-3 flex size-10 items-center justify-center rounded-xl bg-error-500/10">
             <UIcon name="i-lucide-refresh-cw-off" class="size-5 text-error-500" />
           </div>

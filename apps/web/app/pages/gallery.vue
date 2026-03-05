@@ -139,7 +139,7 @@ const categories = [
 
     <!-- CTA -->
     <section class="mx-auto max-w-3xl px-4 pb-12 text-center sm:px-6">
-      <div class="card-interactive rounded-2xl p-8">
+      <div class="card-base rounded-2xl p-8">
         <h2 class="mb-3 text-2xl font-bold text-default">
           Check Any Favicon
         </h2>

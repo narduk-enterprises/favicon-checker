@@ -116,7 +116,7 @@ function recheckDomain() {
           <article
             v-for="(favicon, index) in result.favicons"
             :key="index"
-            class="card-interactive animate-slide-up-sm group rounded-2xl p-6"
+            class="card-base animate-slide-up-sm group rounded-2xl p-6"
             :style="{ animationDelay: `${index * 0.08}s` }"
           >
             <div class="mb-4 flex items-center justify-center rounded-xl bg-elevated p-6">

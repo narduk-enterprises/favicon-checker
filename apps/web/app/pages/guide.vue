@@ -267,7 +267,7 @@ const formatComparison = [
 
       <!-- CTA -->
       <section class="reveal-on-scroll text-center">
-        <div class="card-interactive rounded-2xl p-8">
+        <div class="card-base rounded-2xl p-8">
           <h2 class="mb-3 text-2xl font-bold text-default">
             Ready to Check Your Favicons?
           </h2>
