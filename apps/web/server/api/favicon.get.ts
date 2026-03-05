@@ -32,8 +32,40 @@ function resolveUrl(href: string, baseUrl: string): string {
  * Fetch a favicon image and convert to a base64 data URL.
  * Returns null if the fetch fails.
  */
-async function fetchAsDataUrl(url: string): Promise<{ dataUrl: string | null, type: string }> {
+async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise<{ dataUrl: string | null, type: string }> {
   try {
+    const urlObj = new URL(url)
+    const requestUrl = getRequestURL(event)
+
+    // Bypass Cloudflare 1000 worker loop by reading our own static assets from server storage
+    if (urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') {
+      let path = urlObj.pathname.startsWith('/') ? urlObj.pathname.slice(1) : urlObj.pathname
+      if (path === '') path = 'favicon.ico'
+      
+      const storageKey = `assets:server:public:${path.replaceAll('/', ':')}`
+      const storage = useStorage()
+      const hasItem = await storage.hasItem(storageKey)
+      
+      if (hasItem) {
+        let contentType = 'image/x-icon'
+        if (path.endsWith('.svg')) contentType = 'image/svg+xml'
+        else if (path.endsWith('.png')) contentType = 'image/png'
+        
+        const buffer = await storage.getItemRaw(storageKey)
+        if (buffer) {
+          const bytes = new Uint8Array(buffer as ArrayBuffer)
+          let binary = ''
+          for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]!)
+          }
+          const base64 = btoa(binary)
+          return {
+            dataUrl: `data:${contentType};base64,${base64}`,
+            type: contentType,
+          }
+        }
+      }
+    }
     const cacheBuster = `_fc=${Date.now()}`
     const separator = url.includes('?') ? '&' : '?'
     const response = await fetch(`${url}${separator}${cacheBuster}`, {
@@ -211,7 +243,7 @@ export default defineEventHandler(async (event) => {
   /* eslint-disable nuxt-guardrails/no-map-async-in-server -- concurrent HTTP fetches, not N+1 DB queries */
   const favicons: DiscoveredFavicon[] = await Promise.all(
     discovered.map(async (item) => {
-      const { dataUrl, type } = await fetchAsDataUrl(item.href)
+      const { dataUrl, type } = await fetchAsDataUrl(item.href, event)
       return {
         href: item.href,
         type: type || 'image/x-icon',

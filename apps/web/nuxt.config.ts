@@ -15,6 +15,12 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   nitro: {
+    serverAssets: [
+      {
+        baseName: 'public',
+        dir: './public',
+      },
+    ],
     cloudflareDev: {
       configPath: resolve(__dirname, 'wrangler.json'),
     },
