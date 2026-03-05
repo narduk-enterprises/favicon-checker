@@ -44,15 +44,30 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
       if (path === '' || path === '/') path = '/favicon.ico'
       if (!path.startsWith('/')) path = `/${path}`
       
-      const blob = await $fetch<Blob>(path, { responseType: 'blob' })
+      const storageKey = path.slice(1).replace(/\//g, ':')
+      const buffer = await useStorage('assets:public').getItemRaw(storageKey)
+      
+      if (!buffer) return { dataUrl: null, type: '' }
+      
       let contentType = 'image/x-icon'
       if (path.endsWith('.svg')) contentType = 'image/svg+xml'
       else if (path.endsWith('.png')) contentType = 'image/png'
       
-      const buffer = await blob.arrayBuffer()
-      if (buffer.byteLength === 0) return { dataUrl: null, type: contentType }
+      let bytes: Uint8Array
+      if (buffer instanceof ArrayBuffer) {
+        bytes = new Uint8Array(buffer)
+      } else if (ArrayBuffer.isView(buffer)) {
+        bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength)
+      } else {
+        // Handle Buffer or other object types that might be returned in different environments
+        try {
+          // @ts-ignore - buffer constructor fallback
+          bytes = new Uint8Array(buffer)
+        } catch {
+          return { dataUrl: null, type: contentType }
+        }
+      }
       
-      const bytes = new Uint8Array(buffer)
       let binary = ''
       for (let i = 0; i < bytes.byteLength; i++) {
         binary += String.fromCharCode(bytes[i]!)

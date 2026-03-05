@@ -1,5 +1,7 @@
 # Nuxt dev/build outputs
 .output
+dist/
+server/api/debug*.ts
 .data
 .nuxt
 .nitro

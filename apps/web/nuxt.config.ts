@@ -15,10 +15,11 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   nitro: {
+    preset: 'cloudflare-module',
     serverAssets: [
       {
         baseName: 'public',
-        dir: './public',
+        dir: resolve(__dirname, 'public'),
       },
     ],
     cloudflareDev: {
