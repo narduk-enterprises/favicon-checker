@@ -39,13 +39,30 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
 
     let response: Response
 
-    type CFContext = { cloudflare?: { env?: { ASSETS?: { fetch: (req: Request) => Promise<Response> } } } }
-    const cf = (event.context as unknown as CFContext).cloudflare
-    if ((urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') && cf?.env?.ASSETS) {
+    if (urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') {
       let path = urlObj.pathname
       if (path === '' || path === '/') path = '/favicon.ico'
       if (!path.startsWith('/')) path = `/${path}`
-      response = await cf.env.ASSETS.fetch(new Request(`${requestUrl.origin}${path}`))
+      
+      const blob = await $fetch<Blob>(path, { responseType: 'blob' })
+      let contentType = 'image/x-icon'
+      if (path.endsWith('.svg')) contentType = 'image/svg+xml'
+      else if (path.endsWith('.png')) contentType = 'image/png'
+      
+      const buffer = await blob.arrayBuffer()
+      if (buffer.byteLength === 0) return { dataUrl: null, type: contentType }
+      
+      const bytes = new Uint8Array(buffer)
+      let binary = ''
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]!)
+      }
+      const base64 = btoa(binary)
+      
+      return {
+        dataUrl: `data:${contentType};base64,${base64}`,
+        type: contentType,
+      }
     } else {
       const cacheBuster = `_fc=${Date.now()}`
       const separator = url.includes('?') ? '&' : '?'
@@ -185,26 +202,24 @@ export default defineEventHandler(async (event) => {
   let html = ''
   try {
     const requestUrl = getRequestURL(event)
-    type CFContext = { cloudflare?: { env?: { ASSETS?: { fetch: (req: Request) => Promise<Response> } } } }
-    const cf = (event.context as unknown as CFContext).cloudflare
     
-    let response: Response
-    if ((urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') && cf?.env?.ASSETS) {
+    if (urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') {
       let path = urlObj.pathname
       if (!path.startsWith('/')) path = `/${path}`
-      response = await cf.env.ASSETS.fetch(new Request(`${requestUrl.origin}${path}`))
+      html = await $fetch<string>(path)
     } else {
-      response = await fetch(targetUrl, {
+      const response = await fetch(targetUrl, {
         cache: 'no-store',
         headers: {
           'User-Agent': 'FaviconChecker/1.0 (+https://favicon-checker.narduk.workers.dev)',
           'Accept': 'text/html',
         },
       })
+      if (!response.ok) {
+        throw new Error(`Bad response: ${response.status}`)
+      }
+      html = await response.text()
     }
-    
-    if (!response.ok) throw new Error('Bad response')
-    html = await response.text()
   }
   catch {
     throw createError({
