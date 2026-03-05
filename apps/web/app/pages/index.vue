@@ -137,6 +137,17 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
             </UButton>
           </div>
         </form>
+
+        <div class="mt-4">
+          <UButton
+            variant="link"
+            to="/batch"
+            icon="i-lucide-layers"
+            size="sm"
+          >
+            Check multiple sites at once
+          </UButton>
+        </div>
       </div>
     </section>
 
