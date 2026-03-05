@@ -82,6 +82,7 @@ export function useBatchFaviconChecker() {
       while (index < batchResults.value.length) {
         const i = index++
         const entry = batchResults.value[i]
+        if (!entry) continue
         entry.status = 'checking'
 
         try {
