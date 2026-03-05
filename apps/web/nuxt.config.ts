@@ -76,6 +76,7 @@ export default defineNuxtConfig({
     },
   },
 
+
   schemaOrg: {
     identity: {
       type: 'WebApplication',
