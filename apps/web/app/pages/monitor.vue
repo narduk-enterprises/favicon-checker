@@ -112,7 +112,7 @@ function timeAgo(isoDate: string): string {
                   {{ entry.domain }}
                 </NuxtLink>
                 <p class="text-xs text-dimmed">
-                  Added {{ timeAgo(entry.addedAt) }}
+                  Added <ClientOnly fallback="recently">{{ timeAgo(entry.addedAt) }}</ClientOnly>
                 </p>
               </div>
             </div>
@@ -149,7 +149,7 @@ function timeAgo(isoDate: string): string {
               <p class="text-xs text-dimmed">Score</p>
             </div>
             <div>
-              <p class="font-bold text-default">{{ timeAgo(entry.currentCheck.checkedAt) }}</p>
+              <p class="font-bold text-default"><ClientOnly fallback="...">{{ timeAgo(entry.currentCheck.checkedAt) }}</ClientOnly></p>
               <p class="text-xs text-dimmed">Last Check</p>
             </div>
           </div>

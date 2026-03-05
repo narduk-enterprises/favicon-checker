@@ -13,6 +13,7 @@ import { drizzle } from 'drizzle-orm/d1'
 import { sql, asc } from 'drizzle-orm'
 import { faviconChecks } from '#server/database/schema'
 import * as schema from '#server/database/schema'
+import { consola } from 'consola'
 
 const POPULAR_DOMAINS = [
   // Tech
@@ -62,12 +63,12 @@ const POPULAR_DOMAINS = [
 export default defineNitroPlugin((nitro) => {
   // @ts-expect-error -- Cloudflare scheduled event hook is not typed in Nitro
   nitro.hooks.hook('cloudflare:scheduled', async (event: { scheduledTime: number, cron: string, env: Record<string, unknown> }) => {
-    console.log(`[cron-crawler] Triggered at ${new Date(event.scheduledTime).toISOString()} by cron: ${event.cron}`)
+    consola.info(`[cron-crawler] Triggered at ${new Date(event.scheduledTime).toISOString()} by cron: ${event.cron}`)
 
     try {
       const d1 = event.env.DB as D1Database | undefined
       if (!d1) {
-        console.error('[cron-crawler] No D1 binding found in env.DB')
+        consola.error('[cron-crawler] No D1 binding found in env.DB')
         return
       }
 
@@ -88,7 +89,7 @@ export default defineNitroPlugin((nitro) => {
 
       if (unchecked.length > 0) {
         targetDomain = unchecked[Math.floor(Math.random() * unchecked.length)]!
-        console.log(`[cron-crawler] Picked unchecked domain: ${targetDomain} (${unchecked.length} unchecked remaining)`)
+        consola.info(`[cron-crawler] Picked unchecked domain: ${targetDomain} (${unchecked.length} unchecked remaining)`)
       }
       else {
         // All domains checked — refresh the one with the oldest check
@@ -105,7 +106,7 @@ export default defineNitroPlugin((nitro) => {
         else {
           targetDomain = oldest[Math.floor(Math.random() * oldest.length)]!.domain
         }
-        console.log(`[cron-crawler] All checked, refreshing stale: ${targetDomain}`)
+        consola.info(`[cron-crawler] All checked, refreshing stale: ${targetDomain}`)
       }
 
       // Call the favicon API internally — this handles the full pipeline
@@ -114,12 +115,12 @@ export default defineNitroPlugin((nitro) => {
         params: { url: `https://${targetDomain}` },
       })
 
-      console.log(
+      consola.ready(
         `[cron-crawler] ✅ ${targetDomain}: ${result.favicons?.length ?? 0} favicons, score ${result.auditScore ?? 'N/A'}`,
       )
     }
     catch (error) {
-      console.error('[cron-crawler] ❌ Failed:', error)
+      consola.error('[cron-crawler] ❌ Failed:', error)
     }
   })
 })

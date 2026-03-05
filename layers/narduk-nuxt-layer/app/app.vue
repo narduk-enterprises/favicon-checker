@@ -79,7 +79,7 @@ watch(route, () => {
 
         <!-- Mobile nav -->
         <Transition name="slide-down">
-          <div v-if="mobileMenuOpen" class="md:hidden border-t border-default px-4 py-3 space-y-1">
+          <div v-show="mobileMenuOpen" class="md:hidden border-t border-default px-4 py-3 space-y-1">
             <NuxtLink
               v-for="item in navItems"
               :key="item.to"

@@ -212,7 +212,9 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
             </p>
           </div>
           <UBadge variant="subtle" size="lg">
-            {{ new Date(result.checkedAt).toLocaleTimeString() }}
+            <ClientOnly fallback="...">
+              {{ new Date(result.checkedAt).toLocaleTimeString() }}
+            </ClientOnly>
           </UBadge>
         </div>
 
@@ -599,7 +601,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
               {{ formatDomain(check.domain) }}
             </p>
             <p class="text-xs text-dimmed">
-              {{ check.faviconCount }} favicon{{ check.faviconCount === 1 ? '' : 's' }} · {{ timeAgo(check.checkedAt) }}
+              {{ check.faviconCount }} favicon{{ check.faviconCount === 1 ? '' : 's' }} · <ClientOnly fallback="recently">{{ timeAgo(check.checkedAt) }}</ClientOnly>
             </p>
           </div>
         </NuxtLink>

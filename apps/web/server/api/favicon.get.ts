@@ -309,12 +309,14 @@ export default defineEventHandler(async (event) => {
     const siteUrl = config.public.siteUrl || config.public.appUrl
     if (siteUrl && config.public.indexNowKey) {
       const domainPageUrl = `${siteUrl}/check/${urlObj.hostname}`
-      $fetch('/api/indexnow/submit', {
-        method: 'POST',
-        body: { urls: [domainPageUrl] },
-      }).catch(() => {
-        // IndexNow ping is best-effort
-      })
+      event.waitUntil(
+        $fetch('/api/indexnow/submit', {
+          method: 'POST',
+          body: { urls: [domainPageUrl] },
+        }).catch(() => {
+          // IndexNow ping is best-effort
+        })
+      )
     }
   }
   catch {

@@ -19,7 +19,7 @@ function scrollToTop() {
 <template>
   <Transition name="scroll-top">
     <UButton
-      v-if="showButton"
+      v-show="showButton"
       icon="i-lucide-arrow-up"
       color="primary"
       variant="solid"

@@ -71,7 +71,7 @@ function recheckDomain() {
         </h1>
 
         <p v-if="result" class="mt-3 text-muted">
-          {{ result.faviconCount }} favicon{{ result.faviconCount === 1 ? '' : 's' }} found · Last checked {{ new Date(result.checkedAt).toLocaleDateString() }}
+          {{ result.faviconCount }} favicon{{ result.faviconCount === 1 ? '' : 's' }} found · Last checked <ClientOnly fallback="recently">{{ new Date(result.checkedAt).toLocaleDateString() }}</ClientOnly>
         </p>
 
         <div class="mt-4 flex items-center justify-center gap-4">
