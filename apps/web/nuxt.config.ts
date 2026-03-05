@@ -21,6 +21,10 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
 
+  colorMode: {
+    preference: 'light',
+  },
+
   runtimeConfig: {
     // Server-only (admin API routes)
     googleServiceAccountKey: process.env.GSC_SERVICE_ACCOUNT_JSON || '',

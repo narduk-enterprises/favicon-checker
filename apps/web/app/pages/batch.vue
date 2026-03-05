@@ -55,7 +55,7 @@ function loadExample() {
   <div class="min-h-screen">
     <!-- Hero Section -->
     <section class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-linear-to-b from-primary-950/30 via-transparent to-transparent dark:from-primary-500/5" />
+      <div class="absolute inset-0 bg-linear-to-b from-primary-100 via-transparent to-transparent dark:from-primary-950/30" />
       <div class="relative mx-auto max-w-4xl px-4 pt-20 pb-12 text-center sm:px-6 sm:pt-28 sm:pb-16">
         <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/10 px-4 py-1.5 text-sm font-medium text-primary-500">
           <UIcon name="i-lucide-layers" class="size-4" />
@@ -238,7 +238,7 @@ or
             <div
               v-for="(favicon, idx) in entry.result.favicons"
               :key="idx"
-              class="group flex items-center gap-3 rounded-xl bg-elevated p-3 transition-all duration-200 hover:shadow-elevated"
+              class="group flex cursor-pointer items-center gap-3 rounded-xl bg-elevated p-3 transition-all duration-200 hover:shadow-elevated"
             >
               <img
                 :src="favicon.dataUrl"
@@ -258,7 +258,7 @@ or
                 variant="ghost"
                 size="xs"
                 icon="i-lucide-download"
-                class="ml-1 opacity-0 transition-opacity group-hover:opacity-100"
+                class="ml-1 sm:opacity-0 transition-opacity sm:group-hover:opacity-100"
                 @click="downloadFavicon(favicon)"
               />
             </div>
@@ -271,7 +271,7 @@ or
     <div class="border-t border-default py-8">
       <div class="mx-auto max-w-4xl px-4 text-center text-sm text-dimmed sm:px-6">
         <!-- eslint-disable-next-line atx/prefer-ulink -->
-        <p>Favicon Checker — A free developer tool by <a href="https://nard.uk" class="text-primary-500 hover:underline">Narduk</a>.</p>
+        <p>Favicon Checker — A free developer tool by <a href="https://nard.uk" target="_blank" rel="noopener" class="text-primary-500 hover:underline">Narduk</a>.</p>
       </div>
     </div>
   </div>

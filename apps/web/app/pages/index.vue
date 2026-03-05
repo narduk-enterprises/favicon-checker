@@ -87,7 +87,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
   <div class="min-h-screen">
     <!-- Hero Section -->
     <section class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-linear-to-b from-primary-950/30 via-transparent to-transparent dark:from-primary-500/5" />
+      <div class="absolute inset-0 bg-linear-to-b from-primary-100 via-transparent to-transparent dark:from-primary-950/30" />
       <div class="relative mx-auto max-w-4xl px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-20">
         <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/10 px-4 py-1.5 text-sm font-medium text-primary-500">
           <UIcon name="i-lucide-shield-check" class="size-4" />
@@ -255,14 +255,14 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
           <article
             v-for="(favicon, index) in result.favicons"
             :key="index"
-            class="card-base group rounded-2xl p-6 transition-all duration-200 hover:shadow-elevated"
+            class="card-base group cursor-pointer rounded-2xl p-6 transition-all duration-200 hover:shadow-elevated"
           >
             <!-- Large Preview -->
             <div class="mb-4 flex items-center justify-center rounded-xl bg-elevated p-6">
               <img
                 :src="favicon.dataUrl"
                 :alt="`Favicon from ${favicon.source}`"
-                class="size-20 object-contain transition-transform duration-200 group-hover:scale-110"
+                class="size-20 object-contain transition-transform duration-200 group-hover:scale-105"
                 loading="lazy"
               >
             </div>
@@ -332,7 +332,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
         How It Works
       </h2>
       <div class="grid gap-8 sm:grid-cols-3">
-        <div class="text-center">
+        <div class="text-center rounded-2xl p-6 transition-all duration-200 hover:shadow-elevated hover:-translate-y-0.5">
           <div class="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500/10">
             <UIcon name="i-lucide-link" class="size-8 text-primary-500" />
           </div>
@@ -343,7 +343,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
             Paste any website URL — we'll handle the rest, including URL validation and normalization.
           </p>
         </div>
-        <div class="text-center">
+        <div class="text-center rounded-2xl p-6 transition-all duration-200 hover:shadow-elevated hover:-translate-y-0.5">
           <div class="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500/10">
             <UIcon name="i-lucide-scan-search" class="size-8 text-primary-500" />
           </div>
@@ -354,7 +354,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
             Our server fetches the page HTML, parses link tags, checks /favicon.ico, and reads web manifests — all with cache-busting headers.
           </p>
         </div>
-        <div class="text-center">
+        <div class="text-center rounded-2xl p-6 transition-all duration-200 hover:shadow-elevated hover:-translate-y-0.5">
           <div class="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500/10">
             <UIcon name="i-lucide-eye" class="size-8 text-primary-500" />
           </div>
@@ -434,7 +434,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
     <div class="border-t border-default py-8">
       <div class="mx-auto max-w-4xl px-4 text-center text-sm text-dimmed sm:px-6">
         <!-- eslint-disable-next-line atx/prefer-ulink -->
-        <p>Favicon Checker — A free developer tool by <a href="https://nard.uk" class="text-primary-500 hover:underline">Narduk</a>.</p>
+        <p>Favicon Checker — A free developer tool by <a href="https://nard.uk" target="_blank" rel="noopener" class="text-primary-500 hover:underline">Narduk</a>.</p>
       </div>
     </div>
   </div>
