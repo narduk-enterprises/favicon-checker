@@ -37,43 +37,24 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
     const urlObj = new URL(url)
     const requestUrl = getRequestURL(event)
 
-    // Bypass Cloudflare 1000 worker loop by reading our own static assets from server storage
-    if (urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') {
-      let path = urlObj.pathname.startsWith('/') ? urlObj.pathname.slice(1) : urlObj.pathname
-      if (path === '') path = 'favicon.ico'
-      
-      const storageKey = `assets:server:public:${path.replaceAll('/', ':')}`
-      const storage = useStorage()
-      const hasItem = await storage.hasItem(storageKey)
-      
-      if (hasItem) {
-        let contentType = 'image/x-icon'
-        if (path.endsWith('.svg')) contentType = 'image/svg+xml'
-        else if (path.endsWith('.png')) contentType = 'image/png'
-        
-        const buffer = await storage.getItemRaw(storageKey)
-        if (buffer) {
-          const bytes = new Uint8Array(buffer as ArrayBuffer)
-          let binary = ''
-          for (let i = 0; i < bytes.byteLength; i++) {
-            binary += String.fromCharCode(bytes[i]!)
-          }
-          const base64 = btoa(binary)
-          return {
-            dataUrl: `data:${contentType};base64,${base64}`,
-            type: contentType,
-          }
-        }
-      }
+    let response: Response
+
+    type CFContext = { cloudflare?: { env?: { ASSETS?: { fetch: (req: Request) => Promise<Response> } } } }
+    const cf = (event.context as unknown as CFContext).cloudflare
+    if ((urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') && cf?.env?.ASSETS) {
+      let path = urlObj.pathname
+      if (path === '' || path === '/') path = '/favicon.ico'
+      response = await cf.env.ASSETS.fetch(new Request(`http://localhost${path}`))
+    } else {
+      const cacheBuster = `_fc=${Date.now()}`
+      const separator = url.includes('?') ? '&' : '?'
+      response = await fetch(`${url}${separator}${cacheBuster}`, {
+        cache: 'no-store',
+        headers: {
+          'User-Agent': 'FaviconChecker/1.0 (+https://favicon-checker.narduk.workers.dev)',
+        },
+      })
     }
-    const cacheBuster = `_fc=${Date.now()}`
-    const separator = url.includes('?') ? '&' : '?'
-    const response = await fetch(`${url}${separator}${cacheBuster}`, {
-      cache: 'no-store',
-      headers: {
-        'User-Agent': 'FaviconChecker/1.0 (+https://favicon-checker.narduk.workers.dev)',
-      },
-    })
 
     if (!response.ok) return { dataUrl: null, type: '' }
 
@@ -202,13 +183,24 @@ export default defineEventHandler(async (event) => {
   // Fetch the target page HTML
   let html = ''
   try {
-    const response = await fetch(targetUrl, {
-      cache: 'no-store',
-      headers: {
-        'User-Agent': 'FaviconChecker/1.0 (+https://favicon-checker.narduk.workers.dev)',
-        'Accept': 'text/html',
-      },
-    })
+    const requestUrl = getRequestURL(event)
+    type CFContext = { cloudflare?: { env?: { ASSETS?: { fetch: (req: Request) => Promise<Response> } } } }
+    const cf = (event.context as unknown as CFContext).cloudflare
+    
+    let response: Response
+    if ((urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') && cf?.env?.ASSETS) {
+      response = await cf.env.ASSETS.fetch(new Request(`http://localhost${urlObj.pathname}`))
+    } else {
+      response = await fetch(targetUrl, {
+        cache: 'no-store',
+        headers: {
+          'User-Agent': 'FaviconChecker/1.0 (+https://favicon-checker.narduk.workers.dev)',
+          'Accept': 'text/html',
+        },
+      })
+    }
+    
+    if (!response.ok) throw new Error('Bad response')
     html = await response.text()
   }
   catch {
