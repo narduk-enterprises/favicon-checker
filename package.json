@@ -1,6 +1,6 @@
 {
-  "name": "narduk-nuxt-template",
-  "version": "1.16.1",
+  "name": "favicon-checker",
+  "version": "1.16.0",
   "private": true,
   "packageManager": "pnpm@10.28.0",
   "scripts": {
@@ -48,7 +48,9 @@
     "dev:apple-maps": "pnpm --filter example-apple-maps dev",
     "test:e2e:apple-maps": "pnpm --filter example-apple-maps test:e2e",
     "generate:favicons": "npx tsx tools/generate-favicons.ts",
-    "predeploy": "node tools/check-setup.cjs"
+    "predeploy": "node tools/check-setup.cjs",
+    "format": "prettier --write \"**/*.{ts,mts,vue,js,mjs,json,yaml,yml,css,md}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{ts,mts,vue,js,mjs,json,yaml,yml,css,md}\" --ignore-path .gitignore"
   },
   "pnpm": {
     "overrides": {
@@ -81,6 +83,7 @@
     "googleapis": "^171.4.0",
     "sharp": "^0.34.5",
     "tsx": "^4.21.0",
-    "turbo": "^2.8.12"
+    "turbo": "^2.8.12",
+    "prettier": "^3.8.1"
   }
 }
