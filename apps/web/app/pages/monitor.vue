@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages, nuxt-guardrails/require-schema-on-pages */
+/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
 
 useAppSeo({
   title: 'Favicon Monitor — Track Favicon Changes for Any Website',
