@@ -60,7 +60,10 @@ function downloadFavicon(favicon: Favicon) {
   link.click()
 }
 
-function formatDomain(domain: string): string {
+function formatDomain(domain?: string | null): string {
+  if (!domain)
+    return 'Unknown domain'
+
   return domain.replace(/^www\./, '')
 }
 

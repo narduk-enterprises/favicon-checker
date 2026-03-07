@@ -1,6 +1,14 @@
 import { desc } from 'drizzle-orm'
 import { faviconChecks } from '#server/database/schema'
 
+interface RecentCheckRow {
+  id: number
+  domain: string | null
+  url: string | null
+  faviconCount: number | null
+  checkedAt: string | null
+}
+
 export default defineEventHandler(async (event) => {
   const db = useAppDatabase(event)
 
@@ -16,5 +24,11 @@ export default defineEventHandler(async (event) => {
     .orderBy(desc(faviconChecks.id))
     .limit(20)
 
-  return recent
+  return (recent as RecentCheckRow[]).filter(check =>
+    typeof check.domain === 'string'
+    && check.domain.trim().length > 0
+    && typeof check.url === 'string'
+    && typeof check.faviconCount === 'number'
+    && typeof check.checkedAt === 'string',
+  )
 })

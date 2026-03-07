@@ -30,15 +30,30 @@ interface RecentCheck {
   checkedAt: string
 }
 
+function isRecentCheck(value: unknown): value is RecentCheck {
+  if (!value || typeof value !== 'object')
+    return false
+
+  const candidate = value as Partial<RecentCheck>
+  return typeof candidate.id === 'number'
+    && typeof candidate.domain === 'string'
+    && candidate.domain.trim().length > 0
+    && typeof candidate.url === 'string'
+    && typeof candidate.faviconCount === 'number'
+    && typeof candidate.checkedAt === 'string'
+}
+
 export function useFaviconChecker() {
   const urlInput = ref('')
   const isChecking = ref(false)
   const result = ref<FaviconResult | null>(null)
   const error = ref<string | null>(null)
 
-  const { data: recentChecks, refresh: refreshRecent } = useAsyncData('recent-checks', () => $fetch<RecentCheck[]>('/api/recent'), {
+  const { data: recentChecksData, refresh: refreshRecent } = useAsyncData('recent-checks', () => $fetch<unknown>('/api/recent'), {
     default: () => [],
+    transform: (value): RecentCheck[] => Array.isArray(value) ? value.filter(isRecentCheck) : [],
   })
+  const recentChecks = computed(() => recentChecksData.value)
 
   function normalizeUrl(input: string): string {
     let url = input.trim()
