@@ -264,7 +264,7 @@ export default defineEventHandler(async (event) => {
   discovered.push(...manifestIcons)
 
   // Fetch each favicon and convert to data URL (batched via Promise.all)
-  /* eslint-disable nuxt-guardrails/no-map-async-in-server -- concurrent HTTP fetches, not N+1 DB queries */
+  /* eslint-disable narduk/no-map-async-in-server -- concurrent HTTP fetches, not N+1 DB queries */
   const favicons: DiscoveredFavicon[] = await Promise.all(
     discovered.map(async (item) => {
       const { dataUrl, type } = await fetchAsDataUrl(item.href, event)
@@ -277,7 +277,7 @@ export default defineEventHandler(async (event) => {
       }
     }),
   )
-  /* eslint-enable nuxt-guardrails/no-map-async-in-server */
+  /* eslint-enable narduk/no-map-async-in-server */
 
   // Filter out favicons that couldn't be fetched
   const validFavicons = favicons.filter(f => f.dataUrl !== null)

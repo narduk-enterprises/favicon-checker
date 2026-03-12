@@ -255,7 +255,7 @@ const formatComparison = [
           <ol class="list-decimal space-y-2 pl-6 text-muted">
             <li>Deploy your new favicon files to production.</li>
             <li>Use <NuxtLink to="/" class="font-medium text-primary-500 hover:underline">Favicon Checker</NuxtLink> to verify the server is serving the correct files.</li>
-                        <li>Force-refresh your browser with <UKbd>Cmd+Shift+R</UKbd> (Mac) or <UKbd>Ctrl+Shift+R</UKbd> (Windows).</li>
+            <li>Force-refresh your browser with <UKbd>Cmd+Shift+R</UKbd> (Mac) or <UKbd>Ctrl+Shift+R</UKbd> (Windows).</li>
             <li>If the old favicon persists, open the favicon URL directly (e.g., <code class="rounded bg-elevated px-1">yourdomain.com/favicon.ico</code>) and hard-refresh that page.</li>
             <li>Test across devices — check Chrome, Safari, Firefox, plus iOS and Android.</li>
           </ol>
