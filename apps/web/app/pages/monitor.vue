@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
-useAppSeo({
+useSeo({
   title: 'Favicon Monitor — Track Favicon Changes for Any Website',
   description: 'Monitor your favorite websites for favicon changes. Add domains to your watchlist and detect when favicons are added, removed, or updated.',
 })
@@ -66,7 +64,7 @@ function timeAgo(isoDate: string): string {
     <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <div class="card-base rounded-2xl p-6">
         <h2 class="mb-4 text-lg font-semibold text-default">Add to Watchlist</h2>
-        <!-- eslint-disable-next-line atx/no-native-form, nuxt-ui/prefer-uform -->
+        <!-- eslint-disable-next-line narduk/no-native-form -- native form used for accessibility and @submit.prevent handling -->
         <form class="flex gap-3" @submit.prevent="handleAddDomain">
           <UInput
             v-model="newDomain"

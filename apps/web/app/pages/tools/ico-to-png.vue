@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
-useAppSeo({
+useSeo({
   title: 'ICO to PNG Converter — Free Online ICO Converter',
   description: 'Convert ICO favicon files to PNG format instantly in your browser. Free, no upload needed — your files stay on your device.',
 })
@@ -82,12 +80,12 @@ function download(img: { dataUrl: string }) {
     <!-- Tool -->
     <section class="mx-auto max-w-2xl px-4 py-12 sm:px-6">
       <div class="card-base rounded-2xl p-8 text-center">
-        <!-- eslint-disable-next-line atx/no-native-form -->
+        <!-- eslint-disable-next-line narduk/no-native-form -- hidden file input wrapped in label for custom styling; no UFormField equivalent for file uploads -->
         <label class="mb-4 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-default p-8 transition-colors hover:border-primary-500 hover:bg-primary-50/30 dark:hover:bg-primary-950/20">
           <UIcon name="i-lucide-upload" class="mb-3 size-10 text-primary-500" />
           <span class="font-semibold text-default">Choose an ICO file</span>
           <span class="mt-1 text-sm text-muted">or any image file to convert</span>
-          <!-- eslint-disable-next-line atx/no-native-input -->
+          <!-- eslint-disable-next-line narduk/no-native-input -- hidden file input with @change handler; UInput does not support type="file" -->
           <input type="file" accept=".ico,image/*" class="hidden" @change="handleFile">
         </label>
 

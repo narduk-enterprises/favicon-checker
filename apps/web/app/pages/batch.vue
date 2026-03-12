@@ -1,8 +1,7 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
 import type { Favicon } from '~/composables/useFaviconChecker'
 
-useAppSeo({
+useSeo({
   title: 'Batch Favicon Checker — Check Multiple Sites at Once (Free Tool)',
   description: 'Check favicons for multiple websites simultaneously. Paste a list of URLs and instantly see all their favicons side by side.',
 })

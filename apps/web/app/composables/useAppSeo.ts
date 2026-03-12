@@ -9,9 +9,9 @@ export interface AppSeoOptions {
   ogTitle?: string
   ogDescription?: string
   twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player'
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- schema accepts arbitrary SchemaOrg objects from nuxt-schema-org
   schema?: any[]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- hreflang accepts arbitrary link objects for i18n
   hreflang?: any[]
 }
 

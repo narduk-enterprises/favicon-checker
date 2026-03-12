@@ -1,12 +1,10 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
 const route = useRoute()
 const domain = computed(() => String(route.params.domain))
 
 const { data: result, error } = await useDomainCheck(domain.value)
 
-useAppSeo({
+useSeo({
   title: `${domain.value} Favicon — Check & Download`,
   description: `See all favicons for ${domain.value}. View ICO, PNG, SVG, and Apple Touch Icon at multiple sizes. Download any favicon instantly.`,
 })

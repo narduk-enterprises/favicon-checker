@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
-useAppSeo({
+useSeo({
   title: 'Favicon Checker vs RealFaviconGenerator — Comparison (2026)',
   description: 'Honest comparison between Favicon Checker and RealFaviconGenerator. See which tool is best for checking, testing, and generating favicons.',
 })
@@ -59,7 +57,7 @@ const features = [
       <!-- Comparison Table -->
       <div class="reveal-on-scroll card-base overflow-hidden rounded-2xl">
         <div class="overflow-x-auto">
-          <!-- eslint-disable-next-line atx/no-native-table -->
+          <!-- eslint-disable-next-line narduk/no-native-table -- comparison table with custom colspan styling not supported by UTable -->
           <table class="w-full text-sm">
             <thead>
               <tr class="border-b border-default bg-elevated/50">

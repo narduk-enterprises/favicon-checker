@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
-useAppSeo({
+useSeo({
   title: 'Favicon Gallery — Best Favicon Designs by Industry',
   description: 'Explore the best-designed favicons on the web, organized by industry. Get inspiration for your own favicon from tech, social, e-commerce, and more.',
 })
