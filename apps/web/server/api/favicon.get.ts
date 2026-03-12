@@ -277,7 +277,7 @@ export default defineEventHandler(async (event) => {
       }
     }),
   )
-  /* eslint-enable narduk/no-map-async-in-server */
+  /* eslint-enable narduk/no-map-async-in-server -- end of concurrent map block */
 
   // Filter out favicons that couldn't be fetched
   const validFavicons = favicons.filter(f => f.dataUrl !== null)

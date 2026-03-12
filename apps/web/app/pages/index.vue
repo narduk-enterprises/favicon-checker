@@ -116,7 +116,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
         </div>
 
         <!-- ─── Search Form ─── -->
-        <!-- eslint-disable-next-line narduk/no-native-form -- native form used for accessibility and progressive enhancement with @submit.prevent handler -->
+        <!-- eslint-disable-next-line narduk/no-native-form, narduk/prefer-uform -- native form for accessibility and progressive enhancement with @submit.prevent; UForm not used for this search UX -->
         <form
           id="favicon-search-form"
           class="stagger-2 animate-slide-up"
