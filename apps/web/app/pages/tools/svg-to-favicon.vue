@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
-useAppSeo({
+useSeo({
   title: 'SVG to Favicon Converter — Generate All Sizes from SVG (Free)',
   description: 'Convert any SVG to all required favicon sizes. Upload your SVG and get 16×16, 32×32, 180×180, and more — all in PNG. Free, client-side.',
 })
@@ -105,12 +103,12 @@ function resetTool() {
     <!-- Tool -->
     <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <div v-if="generated.length === 0" class="card-base rounded-2xl p-8 text-center">
-        <!-- eslint-disable-next-line atx/no-native-form -->
+        <!-- eslint-disable-next-line narduk/no-native-form -- hidden file input wrapped in label for custom styling; no UFormField equivalent for file uploads -->
         <label class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-default p-8 transition-colors hover:border-primary-500 hover:bg-primary-50/30 dark:hover:bg-primary-950/20">
           <UIcon name="i-lucide-image" class="mb-3 size-10 text-primary-500" />
           <span class="font-semibold text-default">Choose an SVG file</span>
           <span class="mt-1 text-sm text-muted">We'll generate all standard favicon sizes</span>
-          <!-- eslint-disable-next-line atx/no-native-input -->
+          <!-- eslint-disable-next-line narduk/no-native-input -- hidden file input with @change handler; UInput does not support type="file" -->
           <input type="file" accept=".svg,image/svg+xml" class="hidden" @change="handleFile">
         </label>
       </div>

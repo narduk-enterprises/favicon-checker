@@ -1,8 +1,7 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
 import type { Favicon } from '~/composables/useFaviconChecker'
 
-useAppSeo({
+useSeo({
   title: 'Favicon Checker — See Your Real Favicon Instantly (Free Tool)',
   description: 'Free favicon checker, validator & audit tool. Bypass browser cache and see real favicons instantly. Test all sizes including Apple Touch Icon, ICO, PNG, and SVG. Also works as a favicon tester and size checker.',
 })
@@ -117,7 +116,7 @@ function getSourceBadgeColor(source: string): 'primary' | 'neutral' {
         </div>
 
         <!-- ─── Search Form ─── -->
-        <!-- eslint-disable-next-line atx/no-native-form, nuxt-ui/prefer-uform -->
+        <!-- eslint-disable-next-line narduk/no-native-form -- native form used for accessibility and progressive enhancement with @submit.prevent handler -->
         <form
           id="favicon-search-form"
           class="stagger-2 animate-slide-up"

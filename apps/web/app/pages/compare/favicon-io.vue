@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
-useAppSeo({
+useSeo({
   title: 'Favicon Checker vs favicon.io — Comparison (2026)',
   description: 'Side-by-side comparison of Favicon Checker and favicon.io. See which free favicon tool is best for your needs.',
 })
@@ -57,7 +55,7 @@ const features = [
     <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <div class="reveal-on-scroll card-base overflow-hidden rounded-2xl">
         <div class="overflow-x-auto">
-          <!-- eslint-disable-next-line atx/no-native-table -->
+          <!-- eslint-disable-next-line narduk/no-native-table -- comparison table with custom colspan styling not supported by UTable -->
           <table class="w-full text-sm">
             <thead>
               <tr class="border-b border-default bg-elevated/50">

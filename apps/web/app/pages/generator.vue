@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
-useAppSeo({
+useSeo({
   title: 'Favicon Generator — Create All Sizes from One Image (Free)',
   description: 'Upload one image and generate all required favicon sizes instantly. Download ICO, PNG (16×16 to 512×512), Apple Touch Icon, and web manifest — all free, all client-side.',
 })
@@ -206,7 +204,7 @@ function reset() {
         @drop.prevent="onDrop"
         @click="($refs.fileInput as HTMLInputElement)?.click()"
       >
-        <!-- eslint-disable-next-line atx/no-native-input -->
+        <!-- eslint-disable-next-line narduk/no-native-input -- hidden file input with ref for programmatic click; UInput does not support type="file" -->
         <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFileSelect">
         <UIcon name="i-lucide-upload" class="mb-4 size-12 text-primary-500" />
         <h2 class="mb-2 text-xl font-semibold text-default">

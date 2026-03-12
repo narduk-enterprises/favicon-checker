@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
-useAppSeo({
+useSeo({
   title: 'Favicon Size Checker — Verify Favicon Dimensions & Format (Free)',
   description: 'Upload a favicon and instantly check its dimensions, file format, file size, and transparency support. Free online favicon dimension checker.',
 })
@@ -124,12 +122,12 @@ function handleFile(event: Event) {
     <!-- Tool -->
     <section class="mx-auto max-w-2xl px-4 py-12 sm:px-6">
       <div class="card-base rounded-2xl p-8">
-        <!-- eslint-disable-next-line atx/no-native-form -->
+        <!-- eslint-disable-next-line narduk/no-native-form -- hidden file input wrapped in label for custom styling; no UFormField equivalent for file uploads -->
         <label class="mb-6 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-default p-8 transition-colors hover:border-primary-500 hover:bg-primary-50/30 dark:hover:bg-primary-950/20">
           <UIcon name="i-lucide-ruler" class="mb-3 size-10 text-primary-500" />
           <span class="font-semibold text-default">Upload a favicon to analyze</span>
           <span class="mt-1 text-sm text-muted">ICO, PNG, SVG, GIF, WEBP</span>
-          <!-- eslint-disable-next-line atx/no-native-input -->
+          <!-- eslint-disable-next-line narduk/no-native-input -- hidden file input with @change handler; UInput does not support type="file" -->
           <input type="file" accept="image/*,.ico" class="hidden" @change="handleFile">
         </label>
 

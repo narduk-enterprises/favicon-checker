@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/* eslint-disable nuxt-guardrails/require-use-seo-on-pages */
-
-useAppSeo({
+useSeo({
   title: 'Favicon Trends — What Favicons Do Top Websites Use?',
   description: 'Data-driven analysis of favicon usage across the web. See which formats, sizes, and configurations are most popular among top websites.',
 })
