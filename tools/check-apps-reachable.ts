@@ -71,7 +71,16 @@ function loadUrlsFromFile(path: string): Record<string, string> {
   return data
 }
 
-async function fetchWithTimeout(url: string, ms: number): Promise<{ ok: boolean; status: number; duration: number; buildVersion?: string; buildTime?: string }> {
+async function fetchWithTimeout(
+  url: string,
+  ms: number,
+): Promise<{
+  ok: boolean
+  status: number
+  duration: number
+  buildVersion?: string
+  buildTime?: string
+}> {
   const start = Date.now()
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), ms)
@@ -113,7 +122,9 @@ async function main() {
       (e): e is [string, string] => !!e[1],
     )
     if (entries.length === 0) {
-      console.error('No SITE_URL found for any Doppler project. Check Doppler CLI auth and prd config.')
+      console.error(
+        'No SITE_URL found for any Doppler project. Check Doppler CLI auth and prd config.',
+      )
       process.exit(1)
     }
   } else {
@@ -125,7 +136,15 @@ async function main() {
   console.log('')
   console.log('Fleet reachability check')
   console.log('────────────────────────')
-  const results: { name: string; url: string; ok: boolean; status: number; duration: number; buildVersion?: string; buildTime?: string }[] = []
+  const results: {
+    name: string
+    url: string
+    ok: boolean
+    status: number
+    duration: number
+    buildVersion?: string
+    buildTime?: string
+  }[] = []
 
   for (const [name, url] of entries) {
     const r = await fetchWithTimeout(url, timeoutSec)

@@ -16,7 +16,9 @@ const scoreColor = computed(() => {
   return 'text-error-500'
 })
 
-const gradeColor = computed(() => {
+type BadgeColor = 'success' | 'warning' | 'error'
+
+const gradeColor = computed((): BadgeColor => {
   if (props.score >= 80) return 'success'
   if (props.score >= 50) return 'warning'
   return 'error'
@@ -26,12 +28,10 @@ const gradeColor = computed(() => {
 <template>
   <div class="card-base rounded-2xl p-6">
     <div class="mb-4 flex items-center justify-between">
-      <h3 class="text-lg font-semibold text-default">
-        Favicon Audit Score
-      </h3>
+      <h3 class="text-lg font-semibold text-default">Favicon Audit Score</h3>
       <div class="flex items-center gap-3">
         <span class="text-3xl font-extrabold" :class="scoreColor">{{ score }}</span>
-        <UBadge :color="(gradeColor as 'success' | 'warning' | 'error')" variant="subtle" size="lg">
+        <UBadge :color="gradeColor" variant="subtle" size="lg">
           {{ grade }}
         </UBadge>
       </div>
@@ -56,7 +56,9 @@ const gradeColor = computed(() => {
         v-for="check in checks"
         :key="check.name"
         class="flex items-start gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
-        :class="check.passed ? 'bg-success-50 dark:bg-success-950/20' : 'bg-error-50 dark:bg-error-950/20'"
+        :class="
+          check.passed ? 'bg-success-50 dark:bg-success-950/20' : 'bg-error-50 dark:bg-error-950/20'
+        "
       >
         <UIcon
           :name="check.passed ? 'i-lucide-check-circle' : 'i-lucide-x-circle'"

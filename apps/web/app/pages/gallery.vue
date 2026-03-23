@@ -1,7 +1,20 @@
 <script setup lang="ts">
 useSeo({
   title: 'Favicon Gallery — Best Favicon Designs by Industry',
-  description: 'Explore the best-designed favicons on the web, organized by industry. Get inspiration for your own favicon from tech, social, e-commerce, and more.',
+  description:
+    'Explore the best-designed favicons on the web, organized by industry. Get inspiration for your own favicon from tech, social, e-commerce, and more.',
+  ogImage: {
+    title: 'Favicon Gallery',
+    description: 'The best favicon designs on the web — get inspired.',
+    icon: 'i-lucide-layout-grid',
+  },
+})
+
+useWebPageSchema({
+  name: 'Favicon Gallery — Best Favicon Designs by Industry',
+  description:
+    'Explore the best-designed favicons on the web, organized by industry. Get inspiration for your own favicon from tech, social, e-commerce, and more.',
+  type: 'CollectionPage',
 })
 
 useSchemaOrg([
@@ -13,6 +26,24 @@ useSchemaOrg([
   }),
 ])
 
+useFAQSchema([
+  {
+    question: 'What makes a good favicon design?',
+    answer:
+      'Great favicons use simple, bold shapes with high contrast. They are recognizable at 16×16 pixels, work on both light and dark backgrounds, and represent the brand with minimal detail. Avoid photos or complex illustrations — they become muddy at small sizes.',
+  },
+  {
+    question: "How can I check a specific website's favicon?",
+    answer:
+      'Click any site in the gallery to see its full favicon report — including all sizes, formats, and an audit score. Or use the homepage checker to enter any URL.',
+  },
+  {
+    question: 'Should a favicon match my logo?',
+    answer:
+      'Your favicon should be derived from your logo but simplified. Many brands use a single letter, icon, or symbol from their logo. The key is instant recognition at tiny sizes.',
+  },
+])
+
 useScrollReveal()
 
 const categories = [
@@ -20,8 +51,14 @@ const categories = [
     name: 'Tech Giants',
     icon: 'i-lucide-cpu',
     sites: [
-      { domain: 'google.com', description: 'Clean, multi-color G — instantly recognizable at any size' },
-      { domain: 'apple.com', description: 'Monochrome apple — works perfectly in both light and dark mode' },
+      {
+        domain: 'google.com',
+        description: 'Clean, multi-color G — instantly recognizable at any size',
+      },
+      {
+        domain: 'apple.com',
+        description: 'Monochrome apple — works perfectly in both light and dark mode',
+      },
       { domain: 'microsoft.com', description: 'Four-color window — maintains clarity at 16×16' },
       { domain: 'amazon.com', description: 'Arrow smile — simple and memorable' },
     ],
@@ -31,7 +68,10 @@ const categories = [
     icon: 'i-lucide-code',
     sites: [
       { domain: 'github.com', description: 'Octocat silhouette — bold shape, high contrast' },
-      { domain: 'stackoverflow.com', description: 'Stacked overflow bars — unique geometric shape' },
+      {
+        domain: 'stackoverflow.com',
+        description: 'Stacked overflow bars — unique geometric shape',
+      },
       { domain: 'npmjs.com', description: 'Red npm cube — minimal and effective' },
       { domain: 'vercel.com', description: 'Black triangle — extreme minimalism' },
     ],
@@ -82,16 +122,26 @@ const categories = [
 <template>
   <div class="min-h-screen">
     <!-- Hero -->
-    <section class="hero-glow relative overflow-hidden bg-linear-to-b from-primary-50 to-transparent pb-8 pt-16 dark:from-primary-950/30 dark:to-transparent">
+    <section
+      class="hero-glow relative overflow-hidden bg-linear-to-b from-primary-50 to-transparent pb-8 pt-16 dark:from-primary-950/30 dark:to-transparent"
+    >
       <div class="animated-gradient-bg absolute inset-0 opacity-50" />
       <div class="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
         <NuxtLink to="/" class="group mb-4 inline-flex items-center gap-3">
-          <img src="/logo.png" alt="Favicon Checker" class="size-10 drop-shadow-lg transition-transform group-hover:scale-105">
+          <img
+            src="/logo.png"
+            alt="Favicon Checker"
+            class="size-10 drop-shadow-lg transition-transform group-hover:scale-105"
+          />
           <span class="font-display text-xl font-bold text-default">Favicon Checker</span>
         </NuxtLink>
-        <h1 class="animate-slide-up font-display text-3xl font-extrabold tracking-tight text-default sm:text-4xl lg:text-5xl">
+        <h1
+          class="animate-slide-up font-display text-3xl font-extrabold tracking-tight text-default sm:text-4xl lg:text-5xl"
+        >
           Favicon
-          <span class="bg-linear-to-r from-primary-500 to-primary-300 bg-clip-text text-transparent">Gallery</span>
+          <span class="bg-linear-to-r from-primary-500 to-primary-300 bg-clip-text text-transparent"
+            >Gallery</span
+          >
         </h1>
         <p class="stagger-2 mt-3 animate-slide-up text-lg text-muted">
           The best favicon designs on the web — get inspired for your own.
@@ -123,7 +173,7 @@ const categories = [
                 :alt="`${site.domain} favicon`"
                 class="size-8 object-contain"
                 loading="lazy"
-              >
+              />
             </div>
             <div class="min-w-0 flex-1">
               <p class="font-semibold text-default">{{ site.domain }}</p>
@@ -138,9 +188,7 @@ const categories = [
     <!-- CTA -->
     <section class="mx-auto max-w-3xl px-4 pb-12 text-center sm:px-6">
       <div class="card-base rounded-2xl p-8">
-        <h2 class="mb-3 text-2xl font-bold text-default">
-          Check Any Favicon
-        </h2>
+        <h2 class="mb-3 text-2xl font-bold text-default">Check Any Favicon</h2>
         <p class="mb-6 text-muted">
           Want to see the full favicon setup for any of these sites? Run a detailed check.
         </p>
@@ -148,7 +196,13 @@ const categories = [
           <UButton to="/" icon="i-lucide-search" size="lg" class="press-effect">
             Check a Favicon
           </UButton>
-          <UButton to="/generator" variant="outline" icon="i-lucide-image" size="lg" class="press-effect">
+          <UButton
+            to="/generator"
+            variant="outline"
+            icon="i-lucide-image"
+            size="lg"
+            class="press-effect"
+          >
             Generate Your Own
           </UButton>
         </div>

@@ -68,7 +68,8 @@ export default defineNuxtConfig({
   site: {
     url: process.env.SITE_URL || 'https://favicon-checker.nard.uk',
     name: 'Favicon Checker',
-    description: 'Free online tool to check any website\'s favicon. Bypass browser cache and see the real favicon instantly. Test all favicon sizes including Apple Touch Icon.',
+    description:
+      "Free online tool to check any website's favicon. Bypass browser cache and see the real favicon instantly. Test all favicon sizes including Apple Touch Icon.",
     defaultLocale: 'en',
   },
 
@@ -80,7 +81,6 @@ export default defineNuxtConfig({
       priority: 0.8,
     },
   },
-
 
   schemaOrg: {
     identity: {

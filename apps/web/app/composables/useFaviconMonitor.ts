@@ -23,8 +23,7 @@ export function useFaviconMonitor() {
       try {
         const stored = localStorage.getItem('favicon-watchlist')
         if (stored) watchlist.value = JSON.parse(stored)
-      }
-      catch {
+      } catch {
         // ignore malformed data
       }
     }
@@ -39,8 +38,11 @@ export function useFaviconMonitor() {
   function addDomain(input: string) {
     let domain = input.trim().toLowerCase()
     if (!domain) return
-    domain = domain.replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '')
-    if (watchlist.value.some(w => w.domain === domain)) return
+    domain = domain
+      .replace(/^https?:\/\//, '')
+      .replace(/\/.*$/, '')
+      .replace(/^www\./, '')
+    if (watchlist.value.some((w) => w.domain === domain)) return
 
     watchlist.value.push({
       domain,
@@ -51,14 +53,16 @@ export function useFaviconMonitor() {
   }
 
   function removeDomain(domain: string) {
-    watchlist.value = watchlist.value.filter(w => w.domain !== domain)
+    watchlist.value = watchlist.value.filter((w) => w.domain !== domain)
     saveWatchlist()
   }
 
   async function checkDomain(entry: WatchedDomain) {
     isChecking.value = entry.domain
     try {
-      const result = await $fetch<{ faviconCount: number, auditScore: number, checkedAt: string }>(`/api/domain/${entry.domain}`)
+      const result = await $fetch<{ faviconCount: number; auditScore: number; checkedAt: string }>(
+        `/api/domain/${entry.domain}`,
+      )
       const previous = entry.currentCheck
       entry.currentCheck = {
         faviconCount: result.faviconCount,
@@ -67,14 +71,14 @@ export function useFaviconMonitor() {
       }
       if (previous) {
         entry.lastCheck = previous
-        entry.hasChange = previous.faviconCount !== result.faviconCount || previous.auditScore !== (result.auditScore ?? 0)
+        entry.hasChange =
+          previous.faviconCount !== result.faviconCount ||
+          previous.auditScore !== (result.auditScore ?? 0)
       }
       saveWatchlist()
-    }
-    catch {
+    } catch {
       // Domain not yet checked
-    }
-    finally {
+    } finally {
       isChecking.value = null
     }
   }

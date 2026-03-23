@@ -8,52 +8,160 @@ export default defineEventHandler(async (event) => {
 
   const popularDomains = [
     // Tech
-    'google.com', 'apple.com', 'microsoft.com', 'amazon.com', 'meta.com',
-    'github.com', 'stackoverflow.com', 'npmjs.com', 'vercel.com', 'netlify.com',
-    'cloudflare.com', 'digitalocean.com', 'heroku.com', 'gitlab.com', 'bitbucket.org',
+    'google.com',
+    'apple.com',
+    'microsoft.com',
+    'amazon.com',
+    'meta.com',
+    'github.com',
+    'stackoverflow.com',
+    'npmjs.com',
+    'vercel.com',
+    'netlify.com',
+    'cloudflare.com',
+    'digitalocean.com',
+    'heroku.com',
+    'gitlab.com',
+    'bitbucket.org',
     // Social
-    'twitter.com', 'reddit.com', 'linkedin.com', 'discord.com', 'instagram.com',
-    'facebook.com', 'tiktok.com', 'pinterest.com', 'tumblr.com', 'mastodon.social',
+    'twitter.com',
+    'reddit.com',
+    'linkedin.com',
+    'discord.com',
+    'instagram.com',
+    'facebook.com',
+    'tiktok.com',
+    'pinterest.com',
+    'tumblr.com',
+    'mastodon.social',
     // News
-    'bbc.com', 'nytimes.com', 'theguardian.com', 'techcrunch.com', 'arstechnica.com',
-    'wired.com', 'theverge.com', 'cnn.com', 'reuters.com', 'bloomberg.com',
+    'bbc.com',
+    'nytimes.com',
+    'theguardian.com',
+    'techcrunch.com',
+    'arstechnica.com',
+    'wired.com',
+    'theverge.com',
+    'cnn.com',
+    'reuters.com',
+    'bloomberg.com',
     // E-commerce
-    'shopify.com', 'stripe.com', 'ebay.com', 'etsy.com', 'walmart.com',
-    'target.com', 'bestbuy.com', 'newegg.com', 'alibaba.com', 'wish.com',
+    'shopify.com',
+    'stripe.com',
+    'ebay.com',
+    'etsy.com',
+    'walmart.com',
+    'target.com',
+    'bestbuy.com',
+    'newegg.com',
+    'alibaba.com',
+    'wish.com',
     // Entertainment
-    'spotify.com', 'netflix.com', 'youtube.com', 'twitch.tv', 'soundcloud.com',
-    'hulu.com', 'disneyplus.com', 'hbomax.com', 'crunchyroll.com', 'imdb.com',
+    'spotify.com',
+    'netflix.com',
+    'youtube.com',
+    'twitch.tv',
+    'soundcloud.com',
+    'hulu.com',
+    'disneyplus.com',
+    'hbomax.com',
+    'crunchyroll.com',
+    'imdb.com',
     // Dev Tools
-    'docker.com', 'kubernetes.io', 'figma.com', 'notion.so', 'slack.com',
-    'trello.com', 'jira.com', 'confluence.com', 'postman.com', 'insomnia.rest',
+    'docker.com',
+    'kubernetes.io',
+    'figma.com',
+    'notion.so',
+    'slack.com',
+    'trello.com',
+    'jira.com',
+    'confluence.com',
+    'postman.com',
+    'insomnia.rest',
     // Education
-    'wikipedia.org', 'medium.com', 'dev.to', 'hashnode.dev', 'freecodecamp.org',
-    'coursera.org', 'udemy.com', 'khanacademy.org', 'edx.org', 'codecademy.com',
+    'wikipedia.org',
+    'medium.com',
+    'dev.to',
+    'hashnode.dev',
+    'freecodecamp.org',
+    'coursera.org',
+    'udemy.com',
+    'khanacademy.org',
+    'edx.org',
+    'codecademy.com',
     // SaaS
-    'salesforce.com', 'hubspot.com', 'zendesk.com', 'intercom.com', 'mailchimp.com',
-    'dropbox.com', 'box.com', 'zoom.us', 'webex.com', 'teams.microsoft.com',
+    'salesforce.com',
+    'hubspot.com',
+    'zendesk.com',
+    'intercom.com',
+    'mailchimp.com',
+    'dropbox.com',
+    'box.com',
+    'zoom.us',
+    'webex.com',
+    'teams.microsoft.com',
     // Other popular
-    'wordpress.com', 'squarespace.com', 'wix.com', 'godaddy.com', 'namecheap.com',
-    'archive.org', 'producthunt.com', 'dribbble.com', 'behance.net', 'unsplash.com',
+    'wordpress.com',
+    'squarespace.com',
+    'wix.com',
+    'godaddy.com',
+    'namecheap.com',
+    'archive.org',
+    'producthunt.com',
+    'dribbble.com',
+    'behance.net',
+    'unsplash.com',
     // Finance
-    'paypal.com', 'wise.com', 'revolut.com', 'coinbase.com', 'binance.com',
-    'robinhood.com', 'schwab.com', 'fidelity.com', 'vanguard.com', 'chase.com',
+    'paypal.com',
+    'wise.com',
+    'revolut.com',
+    'coinbase.com',
+    'binance.com',
+    'robinhood.com',
+    'schwab.com',
+    'fidelity.com',
+    'vanguard.com',
+    'chase.com',
     // Gaming
-    'steampowered.com', 'epicgames.com', 'roblox.com', 'minecraft.net', 'ea.com',
-    'playstation.com', 'xbox.com', 'nintendo.com', 'itch.io', 'gog.com',
+    'steampowered.com',
+    'epicgames.com',
+    'roblox.com',
+    'minecraft.net',
+    'ea.com',
+    'playstation.com',
+    'xbox.com',
+    'nintendo.com',
+    'itch.io',
+    'gog.com',
     // Health
-    'webmd.com', 'mayoclinic.org', 'healthline.com', 'nih.gov', 'who.int',
+    'webmd.com',
+    'mayoclinic.org',
+    'healthline.com',
+    'nih.gov',
+    'who.int',
     // Travel
-    'booking.com', 'airbnb.com', 'expedia.com', 'tripadvisor.com', 'kayak.com',
+    'booking.com',
+    'airbnb.com',
+    'expedia.com',
+    'tripadvisor.com',
+    'kayak.com',
     // Food
-    'doordash.com', 'ubereats.com', 'grubhub.com', 'yelp.com', 'allrecipes.com',
+    'doordash.com',
+    'ubereats.com',
+    'grubhub.com',
+    'yelp.com',
+    'allrecipes.com',
     // Government & Org
-    'whitehouse.gov', 'un.org', 'nasa.gov', 'weather.gov', 'si.edu',
+    'whitehouse.gov',
+    'un.org',
+    'nasa.gov',
+    'weather.gov',
+    'si.edu',
   ]
 
   let checked = 0
   let errors = 0
-  const results: Array<{ domain: string, status: string }> = []
+  const results: Array<{ domain: string; status: string }> = []
 
   for (const domain of popularDomains) {
     try {
@@ -62,14 +170,13 @@ export default defineEventHandler(async (event) => {
       })
       checked++
       results.push({ domain, status: 'ok' })
-    }
-    catch {
+    } catch {
       errors++
       results.push({ domain, status: 'error' })
     }
 
     // Small delay between checks to be respectful
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 500))
   }
 
   return {

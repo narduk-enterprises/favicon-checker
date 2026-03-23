@@ -23,8 +23,7 @@ interface DomainFaviconResult {
 export function useDomainCheck(domain: Ref<string> | string) {
   const domainValue = typeof domain === 'string' ? domain : domain.value
 
-  return useFetch<DomainFaviconResult>(
-    `/api/domain/${domainValue}`,
-    { key: `domain-${domainValue}` },
-  )
+  return useFetch<DomainFaviconResult>(`/api/domain/${domainValue}`, {
+    key: `domain-${domainValue}`,
+  })
 }

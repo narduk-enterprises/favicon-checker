@@ -1,7 +1,19 @@
 <script setup lang="ts">
 useSeo({
   title: 'Favicon Monitor — Track Favicon Changes for Any Website',
-  description: 'Monitor your favorite websites for favicon changes. Add domains to your watchlist and detect when favicons are added, removed, or updated.',
+  description:
+    'Monitor your favorite websites for favicon changes. Add domains to your watchlist and detect when favicons are added, removed, or updated.',
+  ogImage: {
+    title: 'Favicon Monitor',
+    description: 'Track favicon changes across your favourite domains.',
+    icon: 'i-lucide-eye',
+  },
+})
+
+useWebPageSchema({
+  name: 'Favicon Monitor — Track Favicon Changes for Any Website',
+  description:
+    'Monitor your favorite websites for favicon changes. Add domains to your watchlist and detect when favicons are added, removed, or updated.',
 })
 
 useSchemaOrg([
@@ -13,9 +25,28 @@ useSchemaOrg([
   }),
 ])
 
+useFAQSchema([
+  {
+    question: 'How does favicon monitoring work?',
+    answer:
+      "Add any domain to your watchlist. The tool stores your list in your browser's local storage. Click the refresh button to re-check a domain and detect if its favicons have changed since your last check.",
+  },
+  {
+    question: 'Is my watchlist stored on your servers?',
+    answer:
+      "No. Your watchlist is stored entirely in your browser's local storage. We never see or store your monitored domains.",
+  },
+  {
+    question: 'Why would I want to monitor favicon changes?',
+    answer:
+      'Favicon monitoring is useful for brand managers tracking competitors, developers verifying deployment changes, SEO professionals auditing client sites, and designers watching for industry trends.',
+  },
+])
+
 useScrollReveal()
 
-const { watchlist, isChecking, loadFromStorage, addDomain, removeDomain, checkDomain } = useFaviconMonitor()
+const { watchlist, isChecking, loadFromStorage, addDomain, removeDomain, checkDomain } =
+  useFaviconMonitor()
 
 const newDomain = ref('')
 
@@ -43,16 +74,26 @@ function timeAgo(isoDate: string): string {
 <template>
   <div class="min-h-screen">
     <!-- Hero -->
-    <section class="hero-glow relative overflow-hidden bg-linear-to-b from-primary-50 to-transparent pb-8 pt-16 dark:from-primary-950/30 dark:to-transparent">
+    <section
+      class="hero-glow relative overflow-hidden bg-linear-to-b from-primary-50 to-transparent pb-8 pt-16 dark:from-primary-950/30 dark:to-transparent"
+    >
       <div class="animated-gradient-bg absolute inset-0 opacity-50" />
       <div class="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
         <NuxtLink to="/" class="group mb-4 inline-flex items-center gap-3">
-          <img src="/logo.png" alt="Favicon Checker" class="size-10 drop-shadow-lg transition-transform group-hover:scale-105">
+          <img
+            src="/logo.png"
+            alt="Favicon Checker"
+            class="size-10 drop-shadow-lg transition-transform group-hover:scale-105"
+          />
           <span class="font-display text-xl font-bold text-default">Favicon Checker</span>
         </NuxtLink>
-        <h1 class="animate-slide-up font-display text-3xl font-extrabold tracking-tight text-default sm:text-4xl lg:text-5xl">
+        <h1
+          class="animate-slide-up font-display text-3xl font-extrabold tracking-tight text-default sm:text-4xl lg:text-5xl"
+        >
           Favicon
-          <span class="bg-linear-to-r from-primary-500 to-primary-300 bg-clip-text text-transparent">Monitor</span>
+          <span class="bg-linear-to-r from-primary-500 to-primary-300 bg-clip-text text-transparent"
+            >Monitor</span
+          >
         </h1>
         <p class="stagger-2 mt-3 animate-slide-up text-lg text-muted">
           Track favicon changes across your favourite domains.
@@ -73,21 +114,23 @@ function timeAgo(isoDate: string): string {
             class="flex-1"
             size="lg"
           />
-          <UButton type="submit" icon="i-lucide-plus" size="lg" :disabled="!newDomain.trim()" class="press-effect">
+          <UButton
+            type="submit"
+            icon="i-lucide-plus"
+            size="lg"
+            :disabled="!newDomain.trim()"
+            class="press-effect"
+          >
             Add
           </UButton>
         </form>
-        <p class="mt-2 text-xs text-dimmed">
-          Your watchlist is stored locally in your browser.
-        </p>
+        <p class="mt-2 text-xs text-dimmed">Your watchlist is stored locally in your browser.</p>
       </div>
     </section>
 
     <!-- Watchlist -->
     <section v-if="watchlist.length > 0" class="mx-auto max-w-3xl px-4 pb-20 sm:px-6">
-      <h2 class="mb-6 text-xl font-bold text-default">
-        Watchlist ({{ watchlist.length }})
-      </h2>
+      <h2 class="mb-6 text-xl font-bold text-default">Watchlist ({{ watchlist.length }})</h2>
 
       <div class="space-y-3">
         <div
@@ -103,10 +146,13 @@ function timeAgo(isoDate: string): string {
                   :alt="entry.domain"
                   class="size-6 object-contain"
                   loading="lazy"
-                >
+                />
               </div>
               <div>
-                <NuxtLink :to="`/check/${entry.domain}`" class="font-semibold text-default hover:text-primary-500">
+                <NuxtLink
+                  :to="`/check/${entry.domain}`"
+                  class="font-semibold text-default hover:text-primary-500"
+                >
                   {{ entry.domain }}
                 </NuxtLink>
                 <p class="text-xs text-dimmed">
@@ -137,7 +183,10 @@ function timeAgo(isoDate: string): string {
           </div>
 
           <!-- Last check info -->
-          <div v-if="entry.currentCheck" class="mt-3 grid grid-cols-3 gap-3 rounded-xl bg-elevated p-3 text-center text-sm">
+          <div
+            v-if="entry.currentCheck"
+            class="mt-3 grid grid-cols-3 gap-3 rounded-xl bg-elevated p-3 text-center text-sm"
+          >
             <div>
               <p class="font-bold text-default">{{ entry.currentCheck.faviconCount }}</p>
               <p class="text-xs text-dimmed">Favicons</p>
@@ -147,7 +196,9 @@ function timeAgo(isoDate: string): string {
               <p class="text-xs text-dimmed">Score</p>
             </div>
             <div>
-              <p class="font-bold text-default"><ClientOnly fallback="...">{{ timeAgo(entry.currentCheck.checkedAt) }}</ClientOnly></p>
+              <p class="font-bold text-default">
+                <ClientOnly fallback="...">{{ timeAgo(entry.currentCheck.checkedAt) }}</ClientOnly>
+              </p>
               <p class="text-xs text-dimmed">Last Check</p>
             </div>
           </div>

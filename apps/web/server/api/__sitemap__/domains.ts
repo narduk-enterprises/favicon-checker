@@ -12,7 +12,7 @@ export default defineSitemapEventHandler(async (event) => {
     .from(faviconChecks)
     .limit(1000)
 
-  return domains.map(row => ({
+  return domains.map((row) => ({
     loc: `/check/${row.domain}`,
     changefreq: 'monthly' as const,
     priority: 0.6,

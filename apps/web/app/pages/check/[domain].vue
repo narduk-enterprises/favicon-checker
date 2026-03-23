@@ -7,6 +7,17 @@ const { data: result, error } = await useDomainCheck(domain.value)
 useSeo({
   title: `${domain.value} Favicon — Check & Download`,
   description: `See all favicons for ${domain.value}. View ICO, PNG, SVG, and Apple Touch Icon at multiple sizes. Download any favicon instantly.`,
+  ogImage: {
+    title: `${domain.value} Favicon Report`,
+    description: `${result.value?.faviconCount ?? 0} favicon(s) found — check and download.`,
+    icon: 'i-lucide-globe',
+  },
+})
+
+useWebPageSchema({
+  name: `${domain.value} Favicon — Check & Download`,
+  description: `See all favicons for ${domain.value}. View ICO, PNG, SVG, and Apple Touch Icon at multiple sizes. Download any favicon instantly.`,
+  type: 'ItemPage',
 })
 
 useSchemaOrg([
@@ -17,12 +28,6 @@ useSchemaOrg([
     ],
   }),
 ])
-
-defineOgImageComponent('Default', {
-  title: `${domain.value} Favicon Report`,
-  description: `${result.value?.faviconCount ?? 0} favicon(s) found`,
-  siteName: 'Favicon Checker',
-})
 
 useFAQSchema([
   {
@@ -37,10 +42,16 @@ useFAQSchema([
 
 const previewSizes = [16, 32, 48, 64]
 
-function downloadFavicon(favicon: { dataUrl: string, type: string, sizes?: string }) {
+function downloadFavicon(favicon: { dataUrl: string; type: string; sizes?: string }) {
   const link = document.createElement('a')
   link.href = favicon.dataUrl
-  const ext = favicon.type.includes('svg') ? 'svg' : favicon.type.includes('png') ? 'png' : favicon.type.includes('gif') ? 'gif' : 'ico'
+  const ext = favicon.type.includes('svg')
+    ? 'svg'
+    : favicon.type.includes('png')
+      ? 'png'
+      : favicon.type.includes('gif')
+        ? 'gif'
+        : 'ico'
   link.download = `${domain.value}-favicon-${favicon.sizes || 'default'}.${ext}`
   link.click()
 }
@@ -54,22 +65,37 @@ function recheckDomain() {
 <template>
   <div class="min-h-screen">
     <!-- Hero -->
-    <section class="hero-glow relative overflow-hidden bg-linear-to-b from-primary-50 to-transparent pb-8 pt-16 dark:from-primary-950/30 dark:to-transparent">
+    <section
+      class="hero-glow relative overflow-hidden bg-linear-to-b from-primary-50 to-transparent pb-8 pt-16 dark:from-primary-950/30 dark:to-transparent"
+    >
       <div class="animated-gradient-bg absolute inset-0 opacity-50" />
 
       <div class="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
         <NuxtLink to="/" class="group mb-4 inline-flex items-center gap-3">
-          <img src="/logo.png" alt="Favicon Checker" class="size-10 drop-shadow-lg transition-transform group-hover:scale-105">
+          <img
+            src="/logo.png"
+            alt="Favicon Checker"
+            class="size-10 drop-shadow-lg transition-transform group-hover:scale-105"
+          />
           <span class="font-display text-xl font-bold text-default">Favicon Checker</span>
         </NuxtLink>
 
-        <h1 class="animate-slide-up font-display text-3xl font-extrabold tracking-tight text-default sm:text-4xl">
+        <h1
+          class="animate-slide-up font-display text-3xl font-extrabold tracking-tight text-default sm:text-4xl"
+        >
           Favicons for
-          <span class="bg-linear-to-r from-primary-500 to-primary-300 bg-clip-text text-transparent">{{ domain }}</span>
+          <span
+            class="bg-linear-to-r from-primary-500 to-primary-300 bg-clip-text text-transparent"
+            >{{ domain }}</span
+          >
         </h1>
 
         <p v-if="result" class="mt-3 text-muted">
-          {{ result.faviconCount }} favicon{{ result.faviconCount === 1 ? '' : 's' }} found · Last checked <ClientOnly fallback="recently">{{ new Date(result.checkedAt).toLocaleDateString() }}</ClientOnly>
+          {{ result.faviconCount }} favicon{{ result.faviconCount === 1 ? '' : 's' }} found · Last
+          checked
+          <ClientOnly fallback="recently">{{
+            new Date(result.checkedAt).toLocaleDateString()
+          }}</ClientOnly>
         </p>
 
         <div class="mt-4 flex items-center justify-center gap-4">
@@ -88,9 +114,7 @@ function recheckDomain() {
       <!-- Error / Not Found -->
       <div v-if="error" class="card-base rounded-2xl p-10 text-center">
         <UIcon name="i-lucide-search-x" class="mx-auto mb-4 size-12 text-dimmed" />
-        <h2 class="mb-2 text-xl font-semibold text-default">
-          No Cached Results
-        </h2>
+        <h2 class="mb-2 text-xl font-semibold text-default">No Cached Results</h2>
         <p class="mb-6 text-muted">
           We haven't checked <strong>{{ domain }}</strong> yet. Run a check to see its favicons.
         </p>
@@ -105,7 +129,13 @@ function recheckDomain() {
           <h2 class="text-2xl font-bold text-default">
             {{ result.faviconCount }} Favicon{{ result.faviconCount === 1 ? '' : 's' }}
           </h2>
-          <UButton variant="outline" icon="i-lucide-refresh-cw" size="sm" class="press-effect" @click="recheckDomain">
+          <UButton
+            variant="outline"
+            icon="i-lucide-refresh-cw"
+            size="sm"
+            class="press-effect"
+            @click="recheckDomain"
+          >
             Re-check
           </UButton>
         </div>
@@ -123,7 +153,7 @@ function recheckDomain() {
                 :alt="`${domain} favicon from ${favicon.source}`"
                 class="size-20 object-contain transition-transform duration-200 group-hover:scale-105"
                 loading="lazy"
-              >
+              />
             </div>
 
             <div class="mb-3">
@@ -135,7 +165,9 @@ function recheckDomain() {
             <div class="space-y-1 text-sm">
               <div class="flex items-center justify-between">
                 <span class="text-dimmed">Type</span>
-                <span class="font-mono text-xs text-default">{{ favicon.type.split('/')[1] || favicon.type }}</span>
+                <span class="font-mono text-xs text-default">{{
+                  favicon.type.split('/')[1] || favicon.type
+                }}</span>
               </div>
               <div v-if="favicon.sizes" class="flex items-center justify-between">
                 <span class="text-dimmed">Sizes</span>
@@ -144,13 +176,29 @@ function recheckDomain() {
             </div>
 
             <div class="mt-4 flex items-end gap-2">
-              <div v-for="size in previewSizes" :key="size" class="flex flex-col items-center gap-1">
-                <img :src="favicon.dataUrl" :alt="`${size}px`" :style="{ width: `${size}px`, height: `${size}px` }" class="object-contain" loading="lazy">
+              <div
+                v-for="size in previewSizes"
+                :key="size"
+                class="flex flex-col items-center gap-1"
+              >
+                <img
+                  :src="favicon.dataUrl"
+                  :alt="`${size}px`"
+                  :style="{ width: `${size}px`, height: `${size}px` }"
+                  class="object-contain"
+                  loading="lazy"
+                />
                 <span class="text-[10px] text-dimmed">{{ size }}</span>
               </div>
             </div>
 
-            <UButton class="press-effect mt-4 w-full" variant="soft" size="sm" icon="i-lucide-download" @click="downloadFavicon(favicon)">
+            <UButton
+              class="press-effect mt-4 w-full"
+              variant="soft"
+              size="sm"
+              icon="i-lucide-download"
+              @click="downloadFavicon(favicon)"
+            >
               Download
             </UButton>
           </article>
@@ -175,19 +223,24 @@ function recheckDomain() {
       </div>
     </section>
 
-    <!-- Batch CTA -->
-    <section class="mx-auto max-w-3xl px-4 pb-12 text-center sm:px-6">
-      <p class="text-muted">
-        Need to check multiple sites?
-      </p>
-      <UButton
-        variant="link"
-        to="/batch"
-        icon="i-lucide-layers"
-        size="sm"
-      >
-        Batch check multiple sites at once
-      </UButton>
+    <!-- Related Tools -->
+    <section class="mx-auto max-w-3xl px-4 pb-12 text-center sm:px-6 space-y-2">
+      <p class="text-muted">More favicon tools</p>
+      <div class="flex flex-wrap items-center justify-center gap-1">
+        <UButton variant="link" to="/batch" icon="i-lucide-layers" size="sm"> Batch check </UButton>
+        <span class="text-dimmed">·</span>
+        <UButton variant="link" to="/generator" icon="i-lucide-image" size="sm">
+          Generate favicons
+        </UButton>
+        <span class="text-dimmed">·</span>
+        <UButton variant="link" to="/guide" icon="i-lucide-book-open" size="sm">
+          Complete guide
+        </UButton>
+        <span class="text-dimmed">·</span>
+        <UButton variant="link" to="/monitor" icon="i-lucide-eye" size="sm">
+          Monitor changes
+        </UButton>
+      </div>
     </section>
 
     <ScrollToTop />

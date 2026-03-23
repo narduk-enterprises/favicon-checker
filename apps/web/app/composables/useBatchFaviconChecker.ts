@@ -13,7 +13,9 @@ export function useBatchFaviconChecker() {
   const batchResults = ref<BatchResult[]>([])
   const progress = computed(() => {
     if (batchResults.value.length === 0) return 0
-    const completed = batchResults.value.filter(r => r.status === 'done' || r.status === 'error').length
+    const completed = batchResults.value.filter(
+      (r) => r.status === 'done' || r.status === 'error',
+    ).length
     return Math.round((completed / batchResults.value.length) * 100)
   })
 
@@ -38,8 +40,7 @@ export function useBatchFaviconChecker() {
             .map((item: unknown) => (typeof item === 'string' ? item.trim() : ''))
             .filter((url: string) => url.length > 0)
         }
-      }
-      catch {
+      } catch {
         // Not valid JSON, fall through
       }
     }
@@ -48,15 +49,15 @@ export function useBatchFaviconChecker() {
     if (trimmed.includes(',') && !trimmed.includes('\n')) {
       return trimmed
         .split(',')
-        .map(url => url.trim())
-        .filter(url => url.length > 0)
+        .map((url) => url.trim())
+        .filter((url) => url.length > 0)
     }
 
     // Default: newline-delimited
     return trimmed
       .split('\n')
-      .map(url => url.trim())
-      .filter(url => url.length > 0)
+      .map((url) => url.trim())
+      .filter((url) => url.length > 0)
   }
 
   async function checkBatch() {
@@ -67,7 +68,7 @@ export function useBatchFaviconChecker() {
     const capped = urls.slice(0, 20)
 
     isProcessing.value = true
-    batchResults.value = capped.map(url => ({
+    batchResults.value = capped.map((url) => ({
       url: normalizeUrl(url),
       result: null,
       error: null,
@@ -91,9 +92,8 @@ export function useBatchFaviconChecker() {
           })
           entry.result = data
           entry.status = 'done'
-        }
-        catch (err: unknown) {
-          const fetchError = err as { data?: { message?: string }, message?: string }
+        } catch (err: unknown) {
+          const fetchError = err as { data?: { message?: string }; message?: string }
           entry.error = fetchError.data?.message || fetchError.message || 'Failed to check'
           entry.status = 'error'
         }

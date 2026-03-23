@@ -80,7 +80,9 @@ function getSecretNames(project: string, config: string): Set<string> | null {
 
 function main() {
   if (!isDopplerAvailable()) {
-    console.error('❌ Doppler CLI not available. Install and log in: https://docs.doppler.com/docs/install-cli')
+    console.error(
+      '❌ Doppler CLI not available. Install and log in: https://docs.doppler.com/docs/install-cli',
+    )
     process.exit(1)
   }
 
@@ -112,7 +114,9 @@ function main() {
   }
   console.log('════════════════════════════════════════════════════')
   if (noAccess > 0) {
-    console.error(`\n⚠️ ${noAccess} project(s) could not be read. Use a Doppler token with access to all fleet projects.`)
+    console.error(
+      `\n⚠️ ${noAccess} project(s) could not be read. Use a Doppler token with access to all fleet projects.`,
+    )
   }
   if (failed > 0) {
     console.error(`\n❌ ${failed} project(s) missing REQUIRED Doppler secrets (prd).`)
@@ -120,7 +124,9 @@ function main() {
     process.exit(1)
   }
   if (warned > 0) {
-    console.log(`\n🟠 ${warned} project(s) missing recommended secrets. Run setup-analytics.ts to fill gaps.`)
+    console.log(
+      `\n🟠 ${warned} project(s) missing recommended secrets. Run setup-analytics.ts to fill gaps.`,
+    )
   }
   if (failed === 0 && noAccess === 0) {
     console.log('\n✅ All fleet projects have required secrets.')

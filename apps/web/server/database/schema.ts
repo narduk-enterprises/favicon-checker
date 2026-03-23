@@ -18,7 +18,9 @@ export const faviconChecks = sqliteTable('favicon_checks', {
   faviconCount: integer('favicon_count').notNull().default(0),
   auditScore: integer('audit_score').default(0),
   resultJson: text('result_json'),
-  checkedAt: text('checked_at').notNull().$defaultFn(() => new Date().toISOString()),
+  checkedAt: text('checked_at')
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
 })
 
 // ─── Type helpers ───────────────────────────────────────────

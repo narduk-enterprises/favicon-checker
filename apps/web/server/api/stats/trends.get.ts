@@ -54,20 +54,24 @@ export default defineEventHandler(async (event) => {
   for (const check of latestChecks) {
     if (!check.resultJson) continue
     try {
-      const favicons = JSON.parse(check.resultJson) as Array<{ type: string, source: string }>
-      const hasIco = favicons.some(f => f.type.includes('x-icon') || f.type.includes('vnd.microsoft.icon') || f.source === '/favicon.ico')
-      const hasPng = favicons.some(f => f.type.includes('png'))
-      const hasSvg = favicons.some(f => f.type.includes('svg'))
-      const hasApple = favicons.some(f => f.source.includes('apple'))
-      const hasManifest = favicons.some(f => f.source === 'manifest')
+      const favicons = JSON.parse(check.resultJson) as Array<{ type: string; source: string }>
+      const hasIco = favicons.some(
+        (f) =>
+          f.type.includes('x-icon') ||
+          f.type.includes('vnd.microsoft.icon') ||
+          f.source === '/favicon.ico',
+      )
+      const hasPng = favicons.some((f) => f.type.includes('png'))
+      const hasSvg = favicons.some((f) => f.type.includes('svg'))
+      const hasApple = favicons.some((f) => f.source.includes('apple'))
+      const hasManifest = favicons.some((f) => f.source === 'manifest')
 
       if (hasIco) withIco++
       if (hasPng) withPng++
       if (hasSvg) withSvg++
       if (hasApple) withApple++
       if (hasManifest) withManifest++
-    }
-    catch {
+    } catch {
       // Skip malformed JSON
     }
   }

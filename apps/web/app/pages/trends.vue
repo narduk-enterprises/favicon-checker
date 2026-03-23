@@ -1,7 +1,19 @@
 <script setup lang="ts">
 useSeo({
   title: 'Favicon Trends — What Favicons Do Top Websites Use?',
-  description: 'Data-driven analysis of favicon usage across the web. See which formats, sizes, and configurations are most popular among top websites.',
+  description:
+    'Data-driven analysis of favicon usage across the web. See which formats, sizes, and configurations are most popular among top websites.',
+  ogImage: {
+    title: 'Favicon Trends',
+    description: 'Data-driven analysis of favicon adoption across the web.',
+    icon: 'i-lucide-trending-up',
+  },
+})
+
+useWebPageSchema({
+  name: 'Favicon Trends — What Favicons Do Top Websites Use?',
+  description:
+    'Data-driven analysis of favicon usage across the web. See which formats, sizes, and configurations are most popular among top websites.',
 })
 
 useSchemaOrg([
@@ -11,6 +23,24 @@ useSchemaOrg([
       { name: 'Trends', item: '/trends' },
     ],
   }),
+])
+
+useFAQSchema([
+  {
+    question: 'What favicon format is most popular?',
+    answer:
+      'ICO remains the most widely used favicon format due to its universal browser support. However, PNG is rapidly growing as modern browsers prefer it for Apple Touch Icons and web manifest entries.',
+  },
+  {
+    question: 'How many favicons should a website have?',
+    answer:
+      'A well-configured website typically has 4-6 favicon files: a 16×16 ICO or PNG for browser tabs, a 32×32 PNG for high-DPI displays, a 180×180 Apple Touch Icon, and 192×192 plus 512×512 PNGs in a web manifest. An SVG favicon is a bonus for modern browsers.',
+  },
+  {
+    question: 'Do most websites have an Apple Touch Icon?',
+    answer:
+      'Our data shows a significant gap in Apple Touch Icon adoption. Many websites miss this critical favicon, causing iOS to screenshot the page instead of displaying a proper icon on home screens.',
+  },
 ])
 
 useScrollReveal()
@@ -31,11 +61,41 @@ const formatBars = computed(() => {
   const total = trends.value?.totalDomains ?? 0
   if (total === 0) return []
   return [
-    { label: 'ICO', count: trends.value!.withIco, pct: Math.round((trends.value!.withIco / total) * 100), width: Math.max(Math.round((trends.value!.withIco / total) * 100), 5), color: 'bg-primary-500' },
-    { label: 'PNG', count: trends.value!.withPng, pct: Math.round((trends.value!.withPng / total) * 100), width: Math.max(Math.round((trends.value!.withPng / total) * 100), 5), color: 'bg-cyan-400' },
-    { label: 'SVG', count: trends.value!.withSvg, pct: Math.round((trends.value!.withSvg / total) * 100), width: Math.max(Math.round((trends.value!.withSvg / total) * 100), 5), color: 'bg-teal-400' },
-    { label: 'Apple Touch', count: trends.value!.withApple, pct: Math.round((trends.value!.withApple / total) * 100), width: Math.max(Math.round((trends.value!.withApple / total) * 100), 5), color: 'bg-sky-500' },
-    { label: 'Manifest', count: trends.value!.withManifest, pct: Math.round((trends.value!.withManifest / total) * 100), width: Math.max(Math.round((trends.value!.withManifest / total) * 100), 5), color: 'bg-indigo-400' },
+    {
+      label: 'ICO',
+      count: trends.value!.withIco,
+      pct: Math.round((trends.value!.withIco / total) * 100),
+      width: Math.max(Math.round((trends.value!.withIco / total) * 100), 5),
+      color: 'bg-primary-500',
+    },
+    {
+      label: 'PNG',
+      count: trends.value!.withPng,
+      pct: Math.round((trends.value!.withPng / total) * 100),
+      width: Math.max(Math.round((trends.value!.withPng / total) * 100), 5),
+      color: 'bg-cyan-400',
+    },
+    {
+      label: 'SVG',
+      count: trends.value!.withSvg,
+      pct: Math.round((trends.value!.withSvg / total) * 100),
+      width: Math.max(Math.round((trends.value!.withSvg / total) * 100), 5),
+      color: 'bg-teal-400',
+    },
+    {
+      label: 'Apple Touch',
+      count: trends.value!.withApple,
+      pct: Math.round((trends.value!.withApple / total) * 100),
+      width: Math.max(Math.round((trends.value!.withApple / total) * 100), 5),
+      color: 'bg-sky-500',
+    },
+    {
+      label: 'Manifest',
+      count: trends.value!.withManifest,
+      pct: Math.round((trends.value!.withManifest / total) * 100),
+      width: Math.max(Math.round((trends.value!.withManifest / total) * 100), 5),
+      color: 'bg-indigo-400',
+    },
   ]
 })
 
@@ -48,16 +108,26 @@ const manifestPct = computed(() => pct(trends.value?.withManifest ?? 0))
 <template>
   <div class="min-h-screen">
     <!-- Hero -->
-    <section class="hero-glow relative overflow-hidden bg-linear-to-b from-primary-50 to-transparent pb-8 pt-16 dark:from-primary-950/30 dark:to-transparent">
+    <section
+      class="hero-glow relative overflow-hidden bg-linear-to-b from-primary-50 to-transparent pb-8 pt-16 dark:from-primary-950/30 dark:to-transparent"
+    >
       <div class="animated-gradient-bg absolute inset-0 opacity-50" />
       <div class="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
         <NuxtLink to="/" class="group mb-4 inline-flex items-center gap-3">
-          <img src="/logo.png" alt="Favicon Checker" class="size-10 drop-shadow-lg transition-transform group-hover:scale-105">
+          <img
+            src="/logo.png"
+            alt="Favicon Checker"
+            class="size-10 drop-shadow-lg transition-transform group-hover:scale-105"
+          />
           <span class="font-display text-xl font-bold text-default">Favicon Checker</span>
         </NuxtLink>
-        <h1 class="animate-slide-up font-display text-3xl font-extrabold tracking-tight text-default sm:text-4xl lg:text-5xl">
+        <h1
+          class="animate-slide-up font-display text-3xl font-extrabold tracking-tight text-default sm:text-4xl lg:text-5xl"
+        >
           Favicon
-          <span class="bg-linear-to-r from-primary-500 to-primary-300 bg-clip-text text-transparent">Trends</span>
+          <span class="bg-linear-to-r from-primary-500 to-primary-300 bg-clip-text text-transparent"
+            >Trends</span
+          >
         </h1>
         <p class="stagger-2 mt-3 animate-slide-up text-lg text-muted">
           Live data from {{ domainCount }} websites we've checked.
@@ -110,7 +180,8 @@ const manifestPct = computed(() => pct(trends.value?.withManifest ?? 0))
           </div>
           <h3 class="mb-2 font-semibold text-default">ICO Remains Universal</h3>
           <p class="text-sm text-muted">
-            {{ icoPct }}% of sites serve /favicon.ico — still the most reliable fallback for maximum browser compatibility.
+            {{ icoPct }}% of sites serve /favicon.ico — still the most reliable fallback for maximum
+            browser compatibility.
           </p>
         </div>
         <div class="card-base rounded-2xl p-6">
@@ -119,7 +190,8 @@ const manifestPct = computed(() => pct(trends.value?.withManifest ?? 0))
           </div>
           <h3 class="mb-2 font-semibold text-default">SVG Adoption Growing</h3>
           <p class="text-sm text-muted">
-            Only {{ svgPct }}% use SVG favicons, but this format enables dark mode support and perfect scaling at any resolution.
+            Only {{ svgPct }}% use SVG favicons, but this format enables dark mode support and
+            perfect scaling at any resolution.
           </p>
         </div>
         <div class="card-base rounded-2xl p-6">
@@ -128,7 +200,8 @@ const manifestPct = computed(() => pct(trends.value?.withManifest ?? 0))
           </div>
           <h3 class="mb-2 font-semibold text-default">Apple Touch Icon Gap</h3>
           <p class="text-sm text-muted">
-            {{ applePct }}% include an Apple Touch Icon — the rest show a page screenshot on iOS home screens.
+            {{ applePct }}% include an Apple Touch Icon — the rest show a page screenshot on iOS
+            home screens.
           </p>
         </div>
         <div class="card-base rounded-2xl p-6">
@@ -137,7 +210,8 @@ const manifestPct = computed(() => pct(trends.value?.withManifest ?? 0))
           </div>
           <h3 class="mb-2 font-semibold text-default">Manifest Adoption</h3>
           <p class="text-sm text-muted">
-            {{ manifestPct }}% provide web manifest icons, essential for Android PWA installs and home screen quality.
+            {{ manifestPct }}% provide web manifest icons, essential for Android PWA installs and
+            home screen quality.
           </p>
         </div>
       </div>
@@ -146,11 +220,10 @@ const manifestPct = computed(() => pct(trends.value?.withManifest ?? 0))
     <!-- CTA -->
     <section class="mx-auto max-w-3xl px-4 pb-20 text-center sm:px-6">
       <div class="card-base rounded-2xl p-8">
-        <h2 class="mb-3 text-2xl font-bold text-default">
-          Contribute to the Data
-        </h2>
+        <h2 class="mb-3 text-2xl font-bold text-default">Contribute to the Data</h2>
         <p class="mb-6 text-muted">
-          Every favicon check adds to our dataset. Help us build the most comprehensive picture of favicon adoption.
+          Every favicon check adds to our dataset. Help us build the most comprehensive picture of
+          favicon adoption.
         </p>
         <UButton to="/" icon="i-lucide-search" size="lg" class="press-effect">
           Check a Favicon

@@ -10,10 +10,13 @@ interface DiscoveredFavicon {
 }
 
 const querySchema = z.object({
-  url: z.string().url('Must be a valid URL').refine(
-    (u) => u.startsWith('http://') || u.startsWith('https://'),
-    'URL must start with http:// or https://',
-  ),
+  url: z
+    .string()
+    .url('Must be a valid URL')
+    .refine(
+      (u) => u.startsWith('http://') || u.startsWith('https://'),
+      'URL must start with http:// or https://',
+    ),
 })
 
 /**
@@ -22,8 +25,7 @@ const querySchema = z.object({
 function resolveUrl(href: string, baseUrl: string): string {
   try {
     return new URL(href, baseUrl).href
-  }
-  catch {
+  } catch {
     return href
   }
 }
@@ -32,7 +34,10 @@ function resolveUrl(href: string, baseUrl: string): string {
  * Fetch a favicon image and convert to a base64 data URL.
  * Returns null if the fetch fails.
  */
-async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise<{ dataUrl: string | null, type: string }> {
+async function fetchAsDataUrl(
+  url: string,
+  event: import('h3').H3Event,
+): Promise<{ dataUrl: string | null; type: string }> {
   try {
     const urlObj = new URL(url)
     const requestUrl = getRequestURL(event)
@@ -43,16 +48,16 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
       let path = urlObj.pathname
       if (path === '' || path === '/') path = '/favicon.ico'
       if (!path.startsWith('/')) path = `/${path}`
-      
+
       const storageKey = path.slice(1).replaceAll('/', ':')
       const buffer = await useStorage('assets:public').getItemRaw(storageKey)
-      
+
       if (!buffer) return { dataUrl: null, type: '' }
-      
+
       let contentType = 'image/x-icon'
       if (path.endsWith('.svg')) contentType = 'image/svg+xml'
       else if (path.endsWith('.png')) contentType = 'image/png'
-      
+
       let bytes: Uint8Array
       if (buffer instanceof ArrayBuffer) {
         bytes = new Uint8Array(buffer)
@@ -66,13 +71,13 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
           return { dataUrl: null, type: contentType }
         }
       }
-      
+
       let binary = ''
       for (let i = 0; i < bytes.byteLength; i++) {
         binary += String.fromCharCode(bytes[i]!)
       }
       const base64 = btoa(binary)
-      
+
       return {
         dataUrl: `data:${contentType};base64,${base64}`,
         type: contentType,
@@ -106,8 +111,7 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
       dataUrl: `data:${contentType};base64,${base64}`,
       type: contentType,
     }
-  }
-  catch {
+  } catch {
     return { dataUrl: null, type: '' }
   }
 }
@@ -115,8 +119,11 @@ async function fetchAsDataUrl(url: string, event: import('h3').H3Event): Promise
 /**
  * Parse HTML to find favicon references in <link> tags and <link rel="manifest">.
  */
-function parseFaviconLinks(html: string, baseUrl: string): Array<{ href: string, source: string, sizes: string }> {
-  const results: Array<{ href: string, source: string, sizes: string }> = []
+function parseFaviconLinks(
+  html: string,
+  baseUrl: string,
+): Array<{ href: string; source: string; sizes: string }> {
+  const results: Array<{ href: string; source: string; sizes: string }> = []
   const seen = new Set<string>()
 
   // Match <link> tags with rel containing 'icon'
@@ -161,11 +168,15 @@ function parseFaviconLinks(html: string, baseUrl: string): Array<{ href: string,
 /**
  * Try finding a manifest.json and extracting icon entries.
  */
-async function parseManifestIcons(html: string, baseUrl: string): Promise<Array<{ href: string, source: string, sizes: string }>> {
-  const results: Array<{ href: string, source: string, sizes: string }> = []
+async function parseManifestIcons(
+  html: string,
+  baseUrl: string,
+): Promise<Array<{ href: string; source: string; sizes: string }>> {
+  const results: Array<{ href: string; source: string; sizes: string }> = []
 
-  const manifestMatch = /<link\s[^>]*rel=["']manifest["'][^>]*href=["']([^"']*)["'][^>]*>/i.exec(html)
-    || /<link\s[^>]*href=["']([^"']*)["'][^>]*rel=["']manifest["'][^>]*>/i.exec(html)
+  const manifestMatch =
+    /<link\s[^>]*rel=["']manifest["'][^>]*href=["']([^"']*)["'][^>]*>/i.exec(html) ||
+    /<link\s[^>]*href=["']([^"']*)["'][^>]*rel=["']manifest["'][^>]*>/i.exec(html)
 
   if (!manifestMatch?.[1]) return results
 
@@ -174,7 +185,9 @@ async function parseManifestIcons(html: string, baseUrl: string): Promise<Array<
     const response = await fetch(manifestUrl, { cache: 'no-store' })
     if (!response.ok) return results
 
-    const manifest = await response.json() as { icons?: Array<{ src: string, sizes?: string, type?: string }> }
+    const manifest = (await response.json()) as {
+      icons?: Array<{ src: string; sizes?: string; type?: string }>
+    }
     if (!manifest.icons || !Array.isArray(manifest.icons)) return results
 
     for (const icon of manifest.icons) {
@@ -186,8 +199,7 @@ async function parseManifestIcons(html: string, baseUrl: string): Promise<Array<
         })
       }
     }
-  }
-  catch {
+  } catch {
     // Manifest fetch failed, skip
   }
 
@@ -216,7 +228,7 @@ export default defineEventHandler(async (event) => {
   let html = ''
   try {
     const requestUrl = getRequestURL(event)
-    
+
     if (urlObj.hostname === requestUrl.hostname || urlObj.hostname === 'localhost') {
       let path = urlObj.pathname
       if (!path.startsWith('/')) path = `/${path}`
@@ -226,7 +238,7 @@ export default defineEventHandler(async (event) => {
         cache: 'no-store',
         headers: {
           'User-Agent': 'FaviconChecker/1.0 (+https://favicon-checker.narduk.workers.dev)',
-          'Accept': 'text/html',
+          Accept: 'text/html',
         },
       })
       if (!response.ok) {
@@ -234,8 +246,7 @@ export default defineEventHandler(async (event) => {
       }
       html = await response.text()
     }
-  }
-  catch {
+  } catch {
     throw createError({
       statusCode: 502,
       message: `Could not reach ${urlObj.hostname}. The site may be down or blocking requests.`,
@@ -243,7 +254,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Discover favicons
-  const discovered: Array<{ href: string, source: string, sizes: string }> = []
+  const discovered: Array<{ href: string; source: string; sizes: string }> = []
 
   // 1. Parse <link> tags
   const linkFavicons = parseFaviconLinks(html, baseUrl)
@@ -251,7 +262,7 @@ export default defineEventHandler(async (event) => {
 
   // 2. Check /favicon.ico at root
   const faviconIcoUrl = `${baseUrl}/favicon.ico`
-  if (!discovered.some(f => f.href === faviconIcoUrl)) {
+  if (!discovered.some((f) => f.href === faviconIcoUrl)) {
     discovered.push({
       href: faviconIcoUrl,
       source: '/favicon.ico',
@@ -280,7 +291,7 @@ export default defineEventHandler(async (event) => {
   /* eslint-enable narduk/no-map-async-in-server -- end of concurrent map block */
 
   // Filter out favicons that couldn't be fetched
-  const validFavicons = favicons.filter(f => f.dataUrl !== null)
+  const validFavicons = favicons.filter((f) => f.dataUrl !== null)
 
   const checkedAt = new Date().toISOString()
 
@@ -298,8 +309,7 @@ export default defineEventHandler(async (event) => {
       resultJson: JSON.stringify(validFavicons),
       checkedAt,
     })
-  }
-  catch {
+  } catch {
     // Database save is best-effort, don't block the response
   }
 
@@ -315,11 +325,10 @@ export default defineEventHandler(async (event) => {
           body: { urls: [domainPageUrl] },
         }).catch(() => {
           // IndexNow ping is best-effort
-        })
+        }),
       )
     }
-  }
-  catch {
+  } catch {
     // IndexNow is best-effort
   }
 

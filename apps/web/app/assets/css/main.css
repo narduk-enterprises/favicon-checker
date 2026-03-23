@@ -41,49 +41,92 @@
 
 /* === Keyframes === */
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slide-up-sm {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 @keyframes pulse-soft {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 /* === Page Transitions === */
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 .page-enter-from {
   opacity: 0;
@@ -127,7 +170,10 @@
   background: var(--color-white);
   border: 1px solid var(--color-neutral-200);
   box-shadow: var(--shadow-card);
-  transition: box-shadow var(--transition-base), transform var(--transition-base), border-color var(--transition-base);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base),
+    border-color var(--transition-base);
 }
 .dark .card-base {
   background: var(--color-neutral-900);
@@ -162,24 +208,44 @@
 .reveal-on-scroll {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
 }
 .reveal-on-scroll.revealed {
   opacity: 1;
   transform: translateY(0);
 }
-.reveal-on-scroll[data-delay="1"] { transition-delay: 0.1s; }
-.reveal-on-scroll[data-delay="2"] { transition-delay: 0.2s; }
-.reveal-on-scroll[data-delay="3"] { transition-delay: 0.3s; }
+.reveal-on-scroll[data-delay='1'] {
+  transition-delay: 0.1s;
+}
+.reveal-on-scroll[data-delay='2'] {
+  transition-delay: 0.2s;
+}
+.reveal-on-scroll[data-delay='3'] {
+  transition-delay: 0.3s;
+}
 
 /* === Animated gradient background === */
 .animated-gradient-bg {
-  background: linear-gradient(-45deg, rgba(6, 182, 212, 0.08), rgba(8, 145, 178, 0.06), rgba(14, 165, 233, 0.04), transparent);
+  background: linear-gradient(
+    -45deg,
+    rgba(6, 182, 212, 0.08),
+    rgba(8, 145, 178, 0.06),
+    rgba(14, 165, 233, 0.04),
+    transparent
+  );
   background-size: 400% 400%;
   animation: gradient-shift 12s ease infinite;
 }
 .dark .animated-gradient-bg {
-  background: linear-gradient(-45deg, rgba(6, 182, 212, 0.06), rgba(8, 145, 178, 0.04), rgba(14, 165, 233, 0.03), transparent);
+  background: linear-gradient(
+    -45deg,
+    rgba(6, 182, 212, 0.06),
+    rgba(8, 145, 178, 0.04),
+    rgba(14, 165, 233, 0.03),
+    transparent
+  );
   background-size: 400% 400%;
 }
 
@@ -216,9 +282,15 @@
 }
 
 /* === Transition utilities === */
-.transition-fast { transition: all var(--transition-fast); }
-.transition-base { transition: all var(--transition-base); }
-.transition-slow { transition: all var(--transition-slow); }
+.transition-fast {
+  transition: all var(--transition-fast);
+}
+.transition-base {
+  transition: all var(--transition-base);
+}
+.transition-slow {
+  transition: all var(--transition-slow);
+}
 
 /* === Button press effect === */
 .press-effect {
@@ -229,12 +301,24 @@
 }
 
 /* === Stagger animation helpers === */
-.stagger-1 { animation-delay: 0.05s; }
-.stagger-2 { animation-delay: 0.1s; }
-.stagger-3 { animation-delay: 0.15s; }
-.stagger-4 { animation-delay: 0.2s; }
-.stagger-5 { animation-delay: 0.25s; }
-.stagger-6 { animation-delay: 0.3s; }
+.stagger-1 {
+  animation-delay: 0.05s;
+}
+.stagger-2 {
+  animation-delay: 0.1s;
+}
+.stagger-3 {
+  animation-delay: 0.15s;
+}
+.stagger-4 {
+  animation-delay: 0.2s;
+}
+.stagger-5 {
+  animation-delay: 0.25s;
+}
+.stagger-6 {
+  animation-delay: 0.3s;
+}
 
 /* === Respect motion preferences === */
 @media (prefers-reduced-motion: reduce) {

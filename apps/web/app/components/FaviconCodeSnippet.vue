@@ -29,8 +29,8 @@ const htmlCode = computed(() => {
 
 const manifestCode = computed(() => {
   const icons = props.favicons
-    .filter(f => f.source === 'manifest')
-    .map(f => ({
+    .filter((f) => f.source === 'manifest')
+    .map((f) => ({
       src: f.href,
       sizes: f.sizes || '192x192',
       type: f.type || 'image/png',
@@ -53,11 +53,15 @@ const { copy: copyManifest, copied: manifestCopied } = useClipboard({ source: ma
     </h3>
 
     <p class="mb-3 text-sm text-muted">
-      Copy this into your <code class="rounded bg-elevated px-1">&lt;head&gt;</code> tag{{ domain ? ` to match ${domain}'s favicon setup` : '' }}:
+      Copy this into your <code class="rounded bg-elevated px-1">&lt;head&gt;</code> tag{{
+        domain ? ` to match ${domain}'s favicon setup` : ''
+      }}:
     </p>
 
     <div class="relative">
-      <pre class="overflow-x-auto rounded-xl bg-elevated p-4 text-sm text-muted"><code>{{ htmlCode }}</code></pre>
+      <pre
+        class="overflow-x-auto rounded-xl bg-elevated p-4 text-sm text-muted"
+      ><code>{{ htmlCode }}</code></pre>
       <UButton
         variant="soft"
         size="xs"
@@ -81,7 +85,9 @@ const { copy: copyManifest, copied: manifestCopied } = useClipboard({ source: ma
       </UButton>
 
       <div v-if="showManifest" class="relative mt-2">
-        <pre class="overflow-x-auto rounded-xl bg-elevated p-4 text-sm text-muted"><code>{{ manifestCode }}</code></pre>
+        <pre
+          class="overflow-x-auto rounded-xl bg-elevated p-4 text-sm text-muted"
+        ><code>{{ manifestCode }}</code></pre>
         <UButton
           variant="soft"
           size="xs"

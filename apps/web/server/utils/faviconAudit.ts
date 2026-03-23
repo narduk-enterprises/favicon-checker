@@ -40,52 +40,69 @@ export function computeAuditScore(favicons: AuditableFavicon[]): AuditResult {
     name: 'Has Favicon',
     passed: hasAny,
     weight: 20,
-    detail: hasAny ? `${favicons.length} favicon(s) detected` : 'No favicons found — add at least one',
+    detail: hasAny
+      ? `${favicons.length} favicon(s) detected`
+      : 'No favicons found — add at least one',
   })
 
   // 2. Has ICO (weight: 10)
-  const hasIco = favicons.some(f => f.type.includes('x-icon') || f.type.includes('vnd.microsoft.icon') || f.source === '/favicon.ico')
+  const hasIco = favicons.some(
+    (f) =>
+      f.type.includes('x-icon') ||
+      f.type.includes('vnd.microsoft.icon') ||
+      f.source === '/favicon.ico',
+  )
   checks.push({
     name: 'ICO Fallback',
     passed: hasIco,
     weight: 10,
-    detail: hasIco ? '/favicon.ico present for legacy support' : 'Missing /favicon.ico — older browsers need this',
+    detail: hasIco
+      ? '/favicon.ico present for legacy support'
+      : 'Missing /favicon.ico — older browsers need this',
   })
 
   // 3. Has PNG (weight: 10)
-  const hasPng = favicons.some(f => f.type.includes('png'))
+  const hasPng = favicons.some((f) => f.type.includes('png'))
   checks.push({
     name: 'PNG Format',
     passed: hasPng,
     weight: 10,
-    detail: hasPng ? 'PNG favicon found for modern browsers' : 'No PNG favicon — recommended for crisp rendering',
+    detail: hasPng
+      ? 'PNG favicon found for modern browsers'
+      : 'No PNG favicon — recommended for crisp rendering',
   })
 
   // 4. Has SVG (weight: 10)
-  const hasSvg = favicons.some(f => f.type.includes('svg'))
+  const hasSvg = favicons.some((f) => f.type.includes('svg'))
   checks.push({
     name: 'SVG Format',
     passed: hasSvg,
     weight: 10,
-    detail: hasSvg ? 'SVG favicon for perfect scaling & dark mode' : 'No SVG — consider adding for sharp rendering at any size',
+    detail: hasSvg
+      ? 'SVG favicon for perfect scaling & dark mode'
+      : 'No SVG — consider adding for sharp rendering at any size',
   })
 
   // 5. Has Apple Touch Icon (weight: 15)
-  const hasApple = favicons.some(f => f.source.includes('apple'))
+  const hasApple = favicons.some((f) => f.source.includes('apple'))
   checks.push({
     name: 'Apple Touch Icon',
     passed: hasApple,
     weight: 15,
-    detail: hasApple ? 'Apple Touch Icon present for iOS' : 'Missing Apple Touch Icon — iOS will screenshot your page instead',
+    detail: hasApple
+      ? 'Apple Touch Icon present for iOS'
+      : 'Missing Apple Touch Icon — iOS will screenshot your page instead',
   })
 
   // 6. Has manifest icons (weight: 10)
-  const hasManifest = favicons.some(f => f.source === 'manifest')
+  const hasManifest = favicons.some((f) => f.source === 'manifest')
   checks.push({
     name: 'Web Manifest Icons',
     passed: hasManifest,
     weight: 10,
-    detail: hasManifest ? 'Manifest icons for Android/PWA installs' : 'No manifest icons — Android home screen will use a generic icon',
+    detail: hasManifest
+      ? 'Manifest icons for Android/PWA installs'
+      : 'No manifest icons — Android home screen will use a generic icon',
   })
 
   // 7. Has 32×32 or larger (weight: 10)
@@ -98,11 +115,13 @@ export function computeAuditScore(favicons: AuditableFavicon[]): AuditResult {
     name: 'High-DPI Size (32×32+)',
     passed: hasLarge,
     weight: 10,
-    detail: hasLarge ? 'High-DPI favicon size available' : 'Only small sizes found — add 32×32+ for Retina displays',
+    detail: hasLarge
+      ? 'High-DPI favicon size available'
+      : 'Only small sizes found — add 32×32+ for Retina displays',
   })
 
   // 8. Multiple sizes (weight: 15)
-  const uniqueSizes = new Set(favicons.map(f => f.sizes).filter(Boolean))
+  const uniqueSizes = new Set(favicons.map((f) => f.sizes).filter(Boolean))
   const hasMultiple = uniqueSizes.size >= 3
   checks.push({
     name: 'Multiple Sizes',

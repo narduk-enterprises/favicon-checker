@@ -6,19 +6,19 @@ async function checkUrl(path: string) {
   console.log(`Checking ${SITE_URL}${path}...`)
   try {
     const html = await $fetch<string>(path, { baseURL: SITE_URL })
-    
+
     const checks = {
       title: html.includes('<title>'),
       metaDesc: html.includes('name="description"'),
       canonical: html.includes('rel="canonical"'),
       ogTitle: html.includes('property="og:title"'),
       twitterCard: html.includes('name="twitter:card"'),
-      schema: html.includes('type="application/ld+json"')
+      schema: html.includes('type="application/ld+json"'),
     }
-    
+
     const failed = Object.entries(checks).filter(([_, passed]) => !passed)
     if (failed.length > 0) {
-      console.error(`❌ ${path} failed checks: ${failed.map(f => f[0]).join(', ')}`)
+      console.error(`❌ ${path} failed checks: ${failed.map((f) => f[0]).join(', ')}`)
       return false
     }
     console.log(`✅ ${path} passed all SEO metadata checks.`)
@@ -49,7 +49,7 @@ async function verifyRobotsAndSitemap() {
 
 async function main() {
   let allPassed = true
-  
+
   const crawlEndpointsPassed = await verifyRobotsAndSitemap()
   if (!crawlEndpointsPassed) allPassed = false
 

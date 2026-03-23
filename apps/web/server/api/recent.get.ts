@@ -24,11 +24,12 @@ export default defineEventHandler(async (event) => {
     .orderBy(desc(faviconChecks.id))
     .limit(20)
 
-  return (recent as RecentCheckRow[]).filter(check =>
-    typeof check.domain === 'string'
-    && check.domain.trim().length > 0
-    && typeof check.url === 'string'
-    && typeof check.faviconCount === 'number'
-    && typeof check.checkedAt === 'string',
+  return (recent as RecentCheckRow[]).filter(
+    (check) =>
+      typeof check.domain === 'string' &&
+      check.domain.trim().length > 0 &&
+      typeof check.url === 'string' &&
+      typeof check.faviconCount === 'number' &&
+      typeof check.checkedAt === 'string',
   )
 })

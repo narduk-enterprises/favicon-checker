@@ -31,16 +31,17 @@ interface RecentCheck {
 }
 
 function isRecentCheck(value: unknown): value is RecentCheck {
-  if (!value || typeof value !== 'object')
-    return false
+  if (!value || typeof value !== 'object') return false
 
   const candidate = value as Partial<RecentCheck>
-  return typeof candidate.id === 'number'
-    && typeof candidate.domain === 'string'
-    && candidate.domain.trim().length > 0
-    && typeof candidate.url === 'string'
-    && typeof candidate.faviconCount === 'number'
-    && typeof candidate.checkedAt === 'string'
+  return (
+    typeof candidate.id === 'number' &&
+    typeof candidate.domain === 'string' &&
+    candidate.domain.trim().length > 0 &&
+    typeof candidate.url === 'string' &&
+    typeof candidate.faviconCount === 'number' &&
+    typeof candidate.checkedAt === 'string'
+  )
 }
 
 export function useFaviconChecker() {
@@ -49,10 +50,15 @@ export function useFaviconChecker() {
   const result = ref<FaviconResult | null>(null)
   const error = ref<string | null>(null)
 
-  const { data: recentChecksData, refresh: refreshRecent } = useAsyncData('recent-checks', () => $fetch<unknown>('/api/recent'), {
-    default: () => [],
-    transform: (value): RecentCheck[] => Array.isArray(value) ? value.filter(isRecentCheck) : [],
-  })
+  const { data: recentChecksData, refresh: refreshRecent } = useAsyncData(
+    'recent-checks',
+    () => $fetch<unknown>('/api/recent'),
+    {
+      default: () => [],
+      transform: (value): RecentCheck[] =>
+        Array.isArray(value) ? value.filter(isRecentCheck) : [],
+    },
+  )
   const recentChecks = computed(() => recentChecksData.value)
 
   function normalizeUrl(input: string): string {
@@ -77,12 +83,11 @@ export function useFaviconChecker() {
       })
       result.value = data
       await refreshRecent()
-    }
-    catch (err: unknown) {
-      const fetchError = err as { data?: { message?: string }, message?: string }
-      error.value = fetchError.data?.message || fetchError.message || 'Something went wrong. Please try again.'
-    }
-    finally {
+    } catch (err: unknown) {
+      const fetchError = err as { data?: { message?: string }; message?: string }
+      error.value =
+        fetchError.data?.message || fetchError.message || 'Something went wrong. Please try again.'
+    } finally {
       isChecking.value = false
     }
   }

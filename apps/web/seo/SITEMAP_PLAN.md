@@ -2,7 +2,8 @@
 
 ## Configuration
 
-Nuxt Sitemap is automatically configured via `@nuxtjs/seo` and the `runtimeConfig.public.siteUrl`.
+Nuxt Sitemap is automatically configured via `@nuxtjs/seo` and the
+`runtimeConfig.public.siteUrl`.
 
 ## Included Routes (Indexable)
 
@@ -16,9 +17,11 @@ Nuxt Sitemap is automatically configured via `@nuxtjs/seo` and the `runtimeConfi
 
 ## Constraints
 
-- **Sub-sitemaps**: Not necessary. With only 2 indexable routes, this falls well below the 50,000 threshold.
+- **Sub-sitemaps**: Not necessary. With only 2 indexable routes, this falls well
+  below the 50,000 threshold.
 - All images will be crawled as there are no product pages with image galleries.
 
 ## Conclusion
 
-The default `/sitemap.xml` automatically covers all indexable pathways dynamically at build/SSR time.
+The default `/sitemap.xml` automatically covers all indexable pathways
+dynamically at build/SSR time.
