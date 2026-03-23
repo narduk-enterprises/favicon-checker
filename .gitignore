@@ -48,3 +48,4 @@ lint-results.txt
 
 # Python cache (uipro skill)
 __pycache__/
+.dev.vars

@@ -1,0 +1,22 @@
+[
+  {
+    "file": "layers/narduk-nuxt-layer/app/composables/useFormat.ts",
+    "line": 1,
+    "kind": "eslint-disable",
+    "rule": "narduk/require-use-prefix-for-composables",
+    "reason": "The file intentionally exports pure format helpers that are not reactive composables.",
+    "owner": "template",
+    "createdAt": "2026-03-23",
+    "expiresAt": "2026-06-30"
+  },
+  {
+    "file": "apps/web/server/api/favicon.get.ts",
+    "line": 278,
+    "kind": "eslint-disable",
+    "rule": "narduk/no-map-async-in-server",
+    "reason": "Concurrent HTTP fetches are intentional here and do not create a DB N+1 pattern.",
+    "owner": "codex",
+    "createdAt": "2026-03-23",
+    "expiresAt": "2026-06-23"
+  }
+]
