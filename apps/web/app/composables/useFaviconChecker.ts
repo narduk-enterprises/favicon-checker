@@ -81,8 +81,12 @@ export function useFaviconChecker() {
       const data = await $fetch<FaviconResult>('/api/favicon', {
         params: { url },
       })
-      result.value = data
       await refreshRecent()
+      const host = new URL(data.url).hostname
+      const redirected = await navigateTo(`/check/${encodeURIComponent(host)}`)
+      if (redirected === false) {
+        result.value = data
+      }
     } catch (err: unknown) {
       const fetchError = err as { data?: { message?: string }; message?: string }
       error.value =
