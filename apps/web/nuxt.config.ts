@@ -97,4 +97,11 @@ export default defineNuxtConfig({
       baseURL: process.env.SITE_URL || 'https://favicon-checker.nard.uk',
     },
   },
+
+  // Mostly-static pages: edge cache + background revalidate (see Nuxt routeRules docs)
+  routeRules: {
+    '/guide': { swr: 3600 },
+    '/gallery': { swr: 3600 },
+    '/compare/**': { swr: 3600 },
+  },
 })

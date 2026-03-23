@@ -1,3 +1,6 @@
+import type { MaybeRefOrGetter } from 'vue'
+import { computed, toValue } from 'vue'
+
 interface DomainFaviconResult {
   domain: string
   url: string
@@ -20,10 +23,11 @@ interface DomainFaviconResult {
   }>
 }
 
-export function useDomainCheck(domain: Ref<string> | string) {
-  const domainValue = typeof domain === 'string' ? domain : domain.value
+/** Reactive domain param so client navigations between /check/a and /check/b refetch. */
+export function useDomainCheck(domain: MaybeRefOrGetter<string>) {
+  const requestUrl = computed(() => `/api/domain/${toValue(domain)}`)
 
-  return useFetch<DomainFaviconResult>(`/api/domain/${domainValue}`, {
-    key: `domain-${domainValue}`,
+  return useFetch<DomainFaviconResult>(requestUrl, {
+    key: computed(() => `domain-${toValue(domain)}`),
   })
 }

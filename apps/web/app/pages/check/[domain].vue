@@ -2,7 +2,7 @@
 const route = useRoute()
 const domain = computed(() => String(route.params.domain))
 
-const { data: result, error } = await useDomainCheck(domain.value)
+const { data: result, error } = await useDomainCheck(domain)
 
 useSeo({
   title: `${domain.value} Favicon — Check & Download`,
