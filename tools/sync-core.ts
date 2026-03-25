@@ -13,7 +13,6 @@ import {
   writeFileSync,
 } from 'node:fs'
 import { basename, dirname, join, relative } from 'node:path'
-import { ensureSkillsLinks } from './ensure-skills-links'
 import { runCommand } from './command'
 import {
   BOOTSTRAP_SYNC_FILES,
@@ -50,6 +49,11 @@ interface SyncCounters {
 interface RepoSkillsRoot {
   path: string
   relativeDir: '.github/skills' | '.agents/skills'
+}
+
+interface ExpectedDirectoryState {
+  directories: Set<string>
+  files: Set<string>
 }
 
 function createCounters(): SyncCounters {
@@ -194,6 +198,118 @@ function collectTrackedPathsForDirectory(relativeDir: string, trackedPaths: Set<
   const prefix = `${relativeDir}/`
 
   return [...trackedPaths].filter((path) => path.startsWith(prefix)).sort()
+}
+
+function buildExpectedDirectoryState(
+  relativePaths: string[],
+  additionalDirectories: string[] = [],
+): ExpectedDirectoryState {
+  const directories = new Set<string>()
+  const files = new Set<string>()
+
+  for (const directory of additionalDirectories) {
+    directories.add(directory)
+  }
+
+  for (const relativePath of relativePaths) {
+    files.add(relativePath)
+
+    let current = dirname(relativePath)
+    while (current && current !== '.') {
+      directories.add(current)
+      current = dirname(current)
+    }
+  }
+
+  return { directories, files }
+}
+
+function collectRelativeDirectoryEntries(rootDir: string): string[] {
+  if (!existsSync(rootDir)) return []
+
+  const entries: string[] = []
+  const visit = (currentDir: string, relativeDir = '') => {
+    for (const entry of readdirSync(currentDir, { withFileTypes: true })) {
+      if (!entry.isDirectory() || entry.isSymbolicLink()) continue
+
+      const relativePath = relativeDir ? `${relativeDir}/${entry.name}` : entry.name
+      entries.push(relativePath)
+      visit(join(currentDir, entry.name), relativePath)
+    }
+  }
+
+  visit(rootDir)
+  return entries.sort()
+}
+
+function collectRelativeFileEntries(rootDir: string): string[] {
+  if (!existsSync(rootDir)) return []
+
+  const entries: string[] = []
+  const visit = (currentDir: string, relativeDir = '') => {
+    for (const entry of readdirSync(currentDir, { withFileTypes: true })) {
+      const relativePath = relativeDir ? `${relativeDir}/${entry.name}` : entry.name
+      const absolutePath = join(currentDir, entry.name)
+
+      if (entry.isDirectory() && !entry.isSymbolicLink()) {
+        visit(absolutePath, relativePath)
+        continue
+      }
+
+      entries.push(relativePath)
+    }
+  }
+
+  visit(rootDir)
+  return entries.sort()
+}
+
+function pruneUnexpectedDirectoryEntries(
+  targetRoot: string,
+  expectedState: ExpectedDirectoryState,
+  dryRun: boolean,
+): number {
+  if (!existsSync(targetRoot)) return 0
+
+  try {
+    const stat = lstatSync(targetRoot)
+    if (!stat.isDirectory() || stat.isSymbolicLink()) {
+      return 0
+    }
+  } catch {
+    return 0
+  }
+
+  let removed = 0
+  const visit = (currentDir: string, relativeDir = '') => {
+    for (const entry of readdirSync(currentDir, { withFileTypes: true })) {
+      const relativePath = relativeDir ? `${relativeDir}/${entry.name}` : entry.name
+      const absolutePath = join(currentDir, entry.name)
+
+      if (entry.isDirectory() && !entry.isSymbolicLink()) {
+        if (!expectedState.directories.has(relativePath)) {
+          if (!dryRun) {
+            rmSync(absolutePath, { recursive: true, force: true })
+          }
+          removed += 1
+          continue
+        }
+
+        visit(absolutePath, relativePath)
+        continue
+      }
+
+      if (expectedState.files.has(relativePath)) continue
+
+      if (!dryRun) {
+        rmSync(absolutePath, { recursive: true, force: true })
+      }
+      removed += 1
+    }
+  }
+
+  visit(targetRoot)
+  return removed
 }
 
 function syncTrackedDirectory(
@@ -347,27 +463,6 @@ function ensurePhysicalDirectory(
   }
 }
 
-function refreshManagedDirectory(
-  directory: string,
-  relativePath: string,
-  dryRun: boolean,
-  log: (message: string) => void,
-) {
-  if (pathOccupied(directory)) {
-    log(`  UPDATE: ${relativePath}`)
-    if (!dryRun) {
-      rmSync(directory, { recursive: true, force: true })
-      mkdirSync(directory, { recursive: true })
-    }
-    return
-  }
-
-  log(`  ADD: ${relativePath}`)
-  if (!dryRun) {
-    mkdirSync(directory, { recursive: true })
-  }
-}
-
 function syncGitHubSkills(
   templateDir: string,
   appDir: string,
@@ -388,20 +483,40 @@ function syncGitHubSkills(
     .sort()
   const managedSkillNames = [...templateSkillNames].sort()
 
-  ensurePhysicalDirectory(join(appDir, '.github/skills'), '.github/skills', dryRun, log)
+  const quietLog = () => {}
+  ensurePhysicalDirectory(join(appDir, '.github/skills'), '.github/skills', dryRun, quietLog)
 
   if (customSkillNames.length > 0) {
     log(`  Skills: preserving app-local GitHub skills: ${customSkillNames.join(', ')}`)
   }
 
+  const beforeCopied = counters.copied
+  const beforeSkipped = counters.skipped
+  const beforeRemoved = counters.removed
+
   for (const skillName of managedSkillNames) {
     const targetSkillDir = join(appDir, '.github/skills', skillName)
     const sourceSkillDir = `${templateSkillsRoot.relativeDir}/${skillName}` as const
     const sourceSkillPrefix = `${templateSkillsRoot.relativeDir}/`
-    refreshManagedDirectory(targetSkillDir, `.github/skills/${skillName}`, dryRun, log)
+    const sourceSkillRelativePrefix = `${sourceSkillDir}/`
+    ensurePhysicalDirectory(targetSkillDir, `.github/skills/${skillName}`, dryRun, quietLog)
 
-    if (trackedPaths) {
-      for (const relativePath of collectTrackedPathsForDirectory(sourceSkillDir, trackedPaths)) {
+    const trackedSkillPaths = trackedPaths
+      ? collectTrackedPathsForDirectory(sourceSkillDir, trackedPaths)
+      : null
+    const sourceSkillAbsoluteDir = join(templateDir, sourceSkillDir)
+    const expectedSkillState = buildExpectedDirectoryState(
+      trackedSkillPaths
+        ? trackedSkillPaths.map((relativePath) =>
+            relativePath.slice(sourceSkillRelativePrefix.length),
+          )
+        : collectRelativeFileEntries(sourceSkillAbsoluteDir),
+      collectRelativeDirectoryEntries(sourceSkillAbsoluteDir),
+    )
+    counters.removed += pruneUnexpectedDirectoryEntries(targetSkillDir, expectedSkillState, dryRun)
+
+    if (trackedSkillPaths) {
+      for (const relativePath of trackedSkillPaths) {
         const targetRelativePath = `.github/skills/${relativePath.slice(sourceSkillPrefix.length)}`
         syncFile(
           join(templateDir, relativePath),
@@ -409,7 +524,7 @@ function syncGitHubSkills(
           templateDir,
           counters,
           dryRun,
-          log,
+          quietLog,
           targetRelativePath,
         )
       }
@@ -422,9 +537,13 @@ function syncGitHubSkills(
       templateDir,
       counters,
       dryRun,
-      log,
+      quietLog,
     )
   }
+
+  log(
+    `  Skills: synced ${managedSkillNames.length} managed skill(s) (${counters.copied - beforeCopied} file(s) updated, ${counters.skipped - beforeSkipped} already current${counters.removed > beforeRemoved ? `, ${counters.removed - beforeRemoved} stale entry(s) removed` : ''}).`,
+  )
 
   const legacySkillsDir = join(appDir, '.agents/skills')
   const canDropLegacyMirror =
@@ -1156,10 +1275,6 @@ export async function runAppSync(options: RunAppSyncOptions) {
     warnIfBootstrapArtifactsMissing(options.appDir, log)
     ensureGitHooksPath(options.appDir, dryRun, log)
   }
-
-  log('')
-  log('  Skills: repairing local agent links → committed repo skills (.github/skills preferred)...')
-  ensureSkillsLinks(options.appDir, { dryRun, log })
 
   // Record template HEAD for drift checks and fleet audit — must run for layer-only
   // sync too, otherwise check-drift-ci keeps comparing against a stale SHA.
