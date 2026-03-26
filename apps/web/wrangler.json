@@ -6,7 +6,9 @@
     "directory": ".output/public"
   },
   "compatibility_date": "2026-03-11",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "observability": {
     "enabled": true
   },
@@ -17,7 +19,9 @@
     }
   ],
   "triggers": {
-    "crons": ["23 * * * *"]
+    "crons": [
+      "23 * * * *"
+    ]
   },
   "d1_databases": [
     {
@@ -29,8 +33,8 @@
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "00000000000000000000000000000000",
-      "preview_id": "00000000000000000000000000000000"
+      "id": "d057d2df16af49d3977809e46f8e5294",
+      "preview_id": "052af52a52ee4e3e87a4ba99b50e43de"
     }
   ]
 }
