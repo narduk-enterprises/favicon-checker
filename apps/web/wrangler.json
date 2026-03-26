@@ -25,5 +25,12 @@
       "database_name": "favicon-checker-db",
       "database_id": "6c3b0fe5-e079-480b-8b24-54e1357136a7"
     }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "00000000000000000000000000000000",
+      "preview_id": "00000000000000000000000000000000"
+    }
   ]
 }

@@ -1,5 +1,4 @@
 import type { MaybeRefOrGetter } from 'vue'
-import { computed, toValue } from 'vue'
 
 interface DomainFaviconResult {
   domain: string
